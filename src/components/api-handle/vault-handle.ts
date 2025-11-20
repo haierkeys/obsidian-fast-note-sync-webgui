@@ -8,7 +8,7 @@ export function handleVault() {
   const { openConfirmDialog } = useConfirmDialog() // 使用 useContext 来获取上下文值
   const token = localStorage.getItem("token")!
 
-  const handleVaultList = async (callback: (key: any) => void) => {
+  const handleVaultList = async (callback: (key: VaultType[]) => void) => {
     const response = await fetch(env.API_URL + "/api/vault?limit=100", {
       method: "GET",
       headers: {
@@ -23,7 +23,7 @@ export function handleVault() {
     }
     const res = await response.json()
     if (res.code < 100 && res.code > 0) {
-      callback(res.data.list)
+      callback(res.data)
     } else {
       return { success: false, error: res.message + ": " + res.details }
     }
@@ -52,7 +52,7 @@ export function handleVault() {
     }
   }
 
-  const handleVaultUpdate = async (data: VaultType, callback: (data2: VaultType) => void) => {
+  const handleVaultUpdate = async (data: Partial<VaultType>, callback: (data2: VaultType) => void) => {
 
 
     const response = await fetch(env.API_URL + "/api/vault", {
@@ -69,38 +69,16 @@ export function handleVault() {
       throw new Error("Network response was not ok")
     }
     const res = await response.json()
-    if (res.code < 100 && res.code >0) {
-      openConfirmDialog(res.message, "success")
-      data.id = res.data
-      callback(data)
-    } else {
-      openConfirmDialog(res.message + ": " + res.details, "error")
-    }
-  }
-
-  const handleVaultTypes = async (callback: (data2: Array<string>) => void) => {
-
-    const response = await fetch(env.API_URL + "/api/user/cloud_config_enabled_types", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Domain: window.location.origin,
-        Token: token,
-        Lang: getBrowserLang(),
-      },
-    })
-    if (!response.ok) {
-      throw new Error("Network response was not ok")
-    }
-    const res = await response.json()
-
-    console.log(res)
     if (res.code < 100 && res.code > 0) {
+      openConfirmDialog(res.message, "success")
+      // data.id = res.data.id
       callback(res.data)
     } else {
       openConfirmDialog(res.message + ": " + res.details, "error")
     }
   }
+
+
 
   return {
     handleVaultList,

@@ -1,15 +1,14 @@
-import { createLoginSchema, type LoginFormData } from "@/lib/validations/user-schema";
-import { useConfirmDialog } from "@/components/context/confirm-dialog-context";
-import { useAuth } from "@/components/api-handle/use-auth";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import { useTranslation } from "react-i18next";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { changeLang } from "@/lib/i18n/utils";
-import { useForm } from "react-hook-form";
-import { Languages } from "lucide-react";
-
+import { createLoginSchema, type LoginFormData } from "@/lib/validations/user-schema"
+import { useConfirmDialog } from "@/components/context/confirm-dialog-context"
+import { useAuth } from "@/components/api-handle/use-auth"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Button } from "@/components/ui/button"
+import { useTranslation } from "react-i18next"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { changeLang } from "@/lib/i18n/utils"
+import { useForm } from "react-hook-form"
+import { Languages } from "lucide-react"
 
 interface LoginFormProps {
   onSuccess: () => void
@@ -34,7 +33,7 @@ export function LoginForm({ onSuccess, onRegister }: LoginFormProps) {
   })
 
   const onSoft = () => {
-    window.open("https://github.com/haierkeys/obsidian-custom-image-auto-uploader", "_blank", "noopener,noreferrer")
+    window.open("https://github.com/haierkeys/fast-note-sync-service", "_blank", "noopener,noreferrer")
   }
 
   //登录处理
@@ -60,7 +59,7 @@ export function LoginForm({ onSuccess, onRegister }: LoginFormProps) {
       <div className="space-y-2">
         <div className="text-gray-500">
           <Button variant="link" onClick={onSoft} type="button" className="text-gray-500 p-0 pr-2">
-            Obsidian Better Sync Service WebGUI
+            Obsidian Fast Note Sync Service
           </Button>
           <p className="text-gray-400 text-xs italic ">{t("subtitle")}</p>
         </div>

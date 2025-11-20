@@ -1,10 +1,10 @@
-import { useState } from "react"
-import { useTranslation } from "react-i18next"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { useAuth } from "@/components/context/auth-context"
 import { useConfirmDialog } from "@/components/context/confirm-dialog-context"
+import { Button } from "@/components/ui/button"
+import { useTranslation } from "react-i18next"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { useState } from "react"
+import env from "@/env.ts"
 
 export function ChangePassword({ close }: { close: () => void }) {
   const { t } = useTranslation()
@@ -26,25 +26,26 @@ export function ChangePassword({ close }: { close: () => void }) {
 
     try {
       const token = localStorage.getItem("token")
-      const response = await fetch("/api/user/change-password", {
+      const formData = new FormData()
+      formData.append("oldPassword", oldPassword)
+      formData.append("password", newPassword)
+      formData.append("confirmPassword", confirmPassword)
+
+      const response = await fetch(env.API_URL + "/api/user/change_password", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          token: token || "",
         },
-        body: JSON.stringify({
-          oldPassword,
-          newPassword,
-        }),
+        body: formData,
       })
 
       const data = await response.json()
 
-      if (response.ok) {
-        openConfirmDialog(t("passwordChangedSuccess"), "success")
+      if (data.status === true) {
+        openConfirmDialog(data.message || t("passwordChangedSuccess"), "success")
         close()
       } else {
-        openConfirmDialog(data.message || t("passwordChangeFailed"), "error")
+        openConfirmDialog(data.details || data.message || t("passwordChangeFailed"), "error")
       }
     } catch (error) {
       openConfirmDialog(t("passwordChangeFailed"), "error")
@@ -57,35 +58,17 @@ export function ChangePassword({ close }: { close: () => void }) {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="oldPassword">{t("currentPassword")}</Label>
-        <Input
-          id="oldPassword"
-          type="password"
-          value={oldPassword}
-          onChange={(e) => setOldPassword(e.target.value)}
-          required
-        />
+        <Input id="oldPassword" type="password" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} required />
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="newPassword">{t("newPassword")}</Label>
-        <Input
-          id="newPassword"
-          type="password"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          required
-        />
+        <Input id="newPassword" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required />
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="confirmPassword">{t("confirmNewPassword")}</Label>
-        <Input
-          id="confirmPassword"
-          type="password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          required
-        />
+        <Input id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
       </div>
 
       <div className="flex justify-end space-x-2 pt-4">
