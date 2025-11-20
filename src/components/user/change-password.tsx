@@ -1,4 +1,5 @@
 import { useConfirmDialog } from "@/components/context/confirm-dialog-context"
+import { addCacheBuster } from "@/lib/utils/cache-buster"
 import { Button } from "@/components/ui/button"
 import { useTranslation } from "react-i18next"
 import { Label } from "@/components/ui/label"
@@ -31,7 +32,7 @@ export function ChangePassword({ close }: { close: () => void }) {
       formData.append("password", newPassword)
       formData.append("confirmPassword", confirmPassword)
 
-      const response = await fetch(env.API_URL + "/api/user/change_password", {
+      const response = await fetch(addCacheBuster(env.API_URL + "/api/user/change_password"), {
         method: "POST",
         headers: {
           token: token || "",

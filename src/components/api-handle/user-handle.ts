@@ -1,4 +1,5 @@
 import { useConfirmDialog } from "@/components/context/confirm-dialog-context";
+import { addCacheBuster } from "@/lib/utils/cache-buster";
 import type { ChangePassword } from "@/lib/types/user";
 import { getBrowserLang } from "@/lib/i18n/utils";
 import env from "@/env.ts";
@@ -11,7 +12,7 @@ export function handleUser() {
 
   const handleUserInfo = async (logout: () => void) => {
     console.log("handleUserInfo")
-    const response = await fetch(env.API_URL + "/api/user/info", {
+    const response = await fetch(addCacheBuster(env.API_URL + "/api/user/info"), {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -36,7 +37,7 @@ export function handleUser() {
 
     const formData = { ...data }
 
-    const response = await fetch(env.API_URL + "/api/user/change_password", {
+    const response = await fetch(addCacheBuster(env.API_URL + "/api/user/change_password"), {
       method: "POST",
       body: JSON.stringify(formData),
       headers: {

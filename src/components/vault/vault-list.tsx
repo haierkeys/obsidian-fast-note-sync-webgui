@@ -31,8 +31,8 @@ export function VaultList() {
 
   const handleDelete = async (id: string) => {
     openConfirmDialog(t("confirmDelete"), "confirm", async () => {
+      await handleVaultDelete(id)
       setVaults(vaults.filter((vault) => vault.id !== id))
-      handleVaultDelete(id)
     })
   }
 

@@ -1,7 +1,9 @@
-import { useState } from "react"
-import type { LoginFormData, RegisterFormData } from "@/lib/validations/user-schema"
-import { getBrowserLang } from "@/lib/i18n/utils"
-import env from "@/env.ts"
+import type { LoginFormData, RegisterFormData } from "@/lib/validations/user-schema";
+import { addCacheBuster } from "@/lib/utils/cache-buster";
+import { getBrowserLang } from "@/lib/i18n/utils";
+import { useState } from "react";
+import env from "@/env.ts";
+
 
 export function useAuth() {
   const [isLoading, setIsLoading] = useState(false)
@@ -9,9 +11,9 @@ export function useAuth() {
   const login = async (data: LoginFormData) => {
     setIsLoading(true)
     try {
-      const response = await fetch(env.API_URL + "/api/user/login", {
+      const response = await fetch(addCacheBuster(env.API_URL + "/api/user/login"), {
         method: "POST",
-        body: JSON.stringify(data), // 使用 FormData 发送数据
+        body: JSON.stringify(data),
         headers: {
           "Content-Type": "application/json",
           Domain: window.location.origin,
@@ -25,7 +27,6 @@ export function useAuth() {
 
       const res = await response.json()
       if (res.code < 100 && res.code > 0) {
-
         localStorage.setItem("token", res.data.token)
         localStorage.setItem("username", res.data.username)
         localStorage.setItem("uid", res.data.uid)
@@ -45,13 +46,13 @@ export function useAuth() {
   const registerUser = async (data: RegisterFormData) => {
     setIsLoading(true)
     try {
-      const response = await fetch(env.API_URL + "/api/user/register", {
+      const response = await fetch(addCacheBuster(env.API_URL + "/api/user/register"), {
         method: "POST",
-        body: JSON.stringify(data), // 使用 FormData 发送数据
+        body: JSON.stringify(data),
         headers: {
           "Content-Type": "application/json",
           Domain: window.location.origin,
-          Lang: getBrowserLang()
+          Lang: getBrowserLang(),
         },
       })
 

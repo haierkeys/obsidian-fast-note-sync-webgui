@@ -106,7 +106,7 @@ const translations = {
     submitting: "Submitting...",
     menuVaults: "Vault Management",
     menuNotes: "Note Management",
-    menuSync: "Remote Sync Management",
+    menuSync: "Remote Sync",
     navigation: "Navigation",
   },
   zh: {
@@ -183,7 +183,7 @@ const translations = {
     submitting: "提交中...",
     menuVaults: "笔记仓库",
     menuNotes: "笔记管理",
-    menuSync: "远程同步管理",
+    menuSync: "远端同步",
     navigation: "功能导航",
   },
 }

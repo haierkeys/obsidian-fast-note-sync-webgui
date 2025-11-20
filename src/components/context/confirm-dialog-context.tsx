@@ -40,7 +40,7 @@ export const ConfirmDialogProvider: React.FC<{ children: ReactNode }> = ({ child
   const openConfirmDialog = (message: string, type?: string, onConfirm?: () => void, children?: ReactNode) => {
     setMessage(message)
     setType(type || "error")
-    setHandleConfirm(onConfirm)
+    setHandleConfirm(() => onConfirm)
     setCustomChildren(children)
     setIsDialogOpen(true)
   }
