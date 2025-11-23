@@ -181,7 +181,7 @@ const translations = {
 
     isEnabled: "已启用",
 
-    logout: "注销",
+    logout: "退出登录",
     close: "关闭",
     cancel: "取消",
     confirm: "确定",
@@ -215,7 +215,7 @@ const translations = {
     noNotes: "暂无笔记",
     noteTitlePlaceholder: "笔记标题 (例如: note.md)",
     noteContentPlaceholder: "请输入笔记内容...",
-    noteContentPlaceholder: "请输入笔记内容...",
+
     saving: "保存中...",
     view: "查看",
     edit: "编辑",
