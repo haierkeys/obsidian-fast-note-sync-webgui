@@ -157,6 +157,10 @@ function App() {
                       <button
                         key={item.id}
                         onClick={() => {
+                          if (item.id === "sync") {
+                            openConfirmDialog(t("underConstruction"), "info")
+                            return
+                          }
                           setActiveMenu(item.id)
                           setShowMobileSidebar(false)
                         }}

@@ -76,13 +76,16 @@ export function NoteEditor({ vault, note, mode, onBack, onSaveSuccess, onEdit }:
                     <Button variant="ghost" size="icon" onClick={onBack}>
                         <ArrowLeft className="h-5 w-5" />
                     </Button>
-                    <Input
-                        value={path}
-                        onChange={(e) => setPath(e.target.value)}
-                        placeholder={t("noteTitlePlaceholder").replace(" (e.g., note.md)", "").replace(" (例如: note.md)", "")}
-                        className="font-bold text-lg border-none shadow-none focus-visible:ring-0 px-0"
-                        readOnly={mode === "view"}
-                    />
+                    {mode === "view" ? (
+                        <span className="font-bold text-lg px-0 truncate">{path}</span>
+                    ) : (
+                        <Input
+                            value={path}
+                            onChange={(e) => setPath(e.target.value)}
+                            placeholder={t("noteTitlePlaceholder").replace(" (e.g., note.md)", "").replace(" (例如: note.md)", "")}
+                            className="font-bold text-lg border-none shadow-none focus-visible:ring-0 px-0"
+                        />
+                    )}
                 </div>
                 {mode === "edit" ? (
                     <Button onClick={handleSave} disabled={saving || loading || !path}>

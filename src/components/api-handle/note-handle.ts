@@ -16,18 +16,22 @@ export function useNoteHandle() {
         Lang: getBrowserLang(),
     })
 
-    const handleNoteList = async (vault: string, callback: (notes: Note[]) => void) => {
+    const handleNoteList = async (vault: string, page: number, pageSize: number, callback: (data: { list: Note[], pager: { page: number, pageSize: number, totalRows: number } }) => void) => {
         try {
-            const response = await fetch(addCacheBuster(`${env.API_URL}/api/notes?vault=${vault}`), {
+            // Ensure page and pageSize are integers strings
+            const pageStr = Math.floor(page).toString();
+            const pageSizeStr = Math.floor(pageSize).toString();
+
+            const response = await fetch(addCacheBuster(`${env.API_URL}/api/notes?vault=${vault}&page=${pageStr}&pageSize=${pageSizeStr}`), {
                 method: "GET",
                 headers: getHeaders(),
             })
             if (!response.ok) {
                 throw new Error("Network response was not ok")
             }
-            const res: NoteResponse<Note[]> = await response.json()
+            const res: NoteResponse<{ list: Note[], pager: { page: number, pageSize: number, totalRows: number } }> = await response.json()
             if (res.code > 0 && res.code <= 200) {
-                callback(res.data || [])
+                callback(res.data)
             } else {
                 openConfirmDialog(res.message, "error")
             }

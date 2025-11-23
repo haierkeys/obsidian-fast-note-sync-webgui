@@ -22,3 +22,14 @@ export interface NoteResponse<T> {
     data: T
     details?: string[]
 }
+
+export interface Pager {
+    page: number
+    pageSize: number
+    totalRows: number
+}
+
+export interface NoteListResponse {
+    list: Note[]
+    pager: Pager
+}
