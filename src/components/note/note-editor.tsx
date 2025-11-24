@@ -77,7 +77,7 @@ export function NoteEditor({ vault, note, mode, onBack, onSaveSuccess, onEdit }:
                         <ArrowLeft className="h-5 w-5" />
                     </Button>
                     {mode === "view" ? (
-                        <span className="font-bold text-lg px-0 truncate">{path}</span>
+                        <span className="font-bold text-lg px-0 break-words">{path}</span>
                     ) : (
                         <Input
                             value={path}

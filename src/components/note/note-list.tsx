@@ -64,12 +64,11 @@ export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateN
                 <div className="flex items-center space-x-4">
                     {vaults && onVaultChange ? (
                         <Select value={vault} onValueChange={onVaultChange}>
-                            <SelectTrigger className="w-auto min-w-[240px] font-medium">
+                            <SelectTrigger className="w-auto min-w-[220px] font-medium">
                                 <div className="flex items-center gap-2">
                                     <span className="font-bold"><SelectValue placeholder="Select Vault" /></span>
                                     <span className="text-muted-foreground">/</span>
                                     <span className="font-bold">{t("notes")}</span>
-                                    <span className="text-muted-foreground text-sm">({totalRows})</span>
                                 </div>
                             </SelectTrigger>
                             <SelectContent>
@@ -91,8 +90,8 @@ export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateN
                         <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
                     </Button>
                     <Button onClick={onCreateNote}>
-                        <Plus className="mr-2 h-4 w-4" />
-                        {t("newNote")}
+                        <Plus className="h-4 w-4 sm:mr-2" />
+                        <span className="hidden sm:inline">{t("newNote")}</span>
                     </Button>
                 </div>
             </CardHeader>
@@ -113,9 +112,9 @@ export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateN
                                         <div className="flex items-center space-x-4 overflow-hidden">
                                             <FileText className="h-5 w-5 text-blue-500 flex-shrink-0" />
                                             <div className="flex flex-col overflow-hidden">
-                                                <span className="font-medium truncate text-base">{note.path.replace(/\.md$/, "")}</span>
-                                                <div className="flex items-center space-x-3 text-xs text-gray-400">
-                                                    <span className="flex items-center" title={t("createdAt")}>
+                                                <span className="font-medium truncate text-base max-w-[280px] sm:max-w-none">{note.path.replace(/\.md$/, "")}</span>
+                                                <div className="flex items-center sm:space-x-3 text-xs text-gray-400">
+                                                    <span className="hidden sm:flex items-center" title={t("createdAt")}>
                                                         <Calendar className="mr-1 h-3 w-3" />
                                                         {format(new Date(note.ctime), "yyyy-MM-dd HH:mm")}
                                                     </span>
@@ -130,7 +129,7 @@ export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateN
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
-                                                className="h-8 w-8 text-gray-500 hover:text-blue-600 hover:bg-blue-50"
+                                                className="h-8 w-8 text-gray-500 hover:text-blue-600 hover:bg-blue-50 hidden sm:inline-flex"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     onSelectNote(note, "view");
@@ -142,7 +141,7 @@ export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateN
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
-                                                className="h-8 w-8 text-gray-500 hover:text-green-600 hover:bg-green-50"
+                                                className="h-8 w-8 text-gray-500 hover:text-green-600 hover:bg-green-50 hidden sm:inline-flex"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     onSelectNote(note, "edit");
@@ -164,7 +163,7 @@ export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateN
                                 ))}
                             </div>
                             {/* Pagination Controls */}
-                            <div className="flex items-center justify-between px-6 py-4">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between px-6 py-4 gap-4 sm:gap-0">
                                 <div className="flex items-center space-x-2 text-sm text-gray-500">
                                     <span>{t("of")} {totalRows} {t("results")}</span>
                                     <Select value={pageSize.toString()} onValueChange={(val) => {
