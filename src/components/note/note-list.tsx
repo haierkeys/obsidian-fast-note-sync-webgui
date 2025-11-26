@@ -16,15 +16,17 @@ interface NoteListProps {
     onVaultChange?: (vault: string) => void;
     onSelectNote: (note: Note, mode: "view" | "edit") => void;
     onCreateNote: () => void;
+    page: number;
+    setPage: (page: number) => void;
+    pageSize: number;
+    setPageSize: (pageSize: number) => void;
 }
 
-export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateNote }: NoteListProps) {
+export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateNote, page, setPage, pageSize, setPageSize }: NoteListProps) {
     const { t } = useTranslation();
     const { handleNoteList, handleDeleteNote } = useNoteHandle();
     const [notes, setNotes] = useState<Note[]>([]);
     const [loading, setLoading] = useState(false);
-    const [page, setPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
     const [totalRows, setTotalRows] = useState(0);
 
     const fetchNotes = (currentPage: number = page, currentPageSize: number = pageSize) => {
@@ -32,20 +34,19 @@ export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateN
         handleNoteList(vault, currentPage, currentPageSize, (data) => {
             setNotes(data.list);
             setTotalRows(data.pager.totalRows);
-            setPage(data.pager.page);
+            // setPage(data.pager.page); // Don't update page from response, trust the state
             setLoading(false);
         });
     };
 
     useEffect(() => {
-        setPage(1);
-        fetchNotes(1);
-    }, [vault]);
+        fetchNotes(page, pageSize);
+    }, [vault, page, pageSize]);
 
     const handlePageChange = (newPage: number) => {
         if (newPage >= 1 && newPage <= Math.ceil(totalRows / pageSize)) {
             setPage(newPage);
-            fetchNotes(newPage);
+            // fetchNotes(newPage); // useEffect will handle this
         }
     };
 
@@ -170,7 +171,7 @@ export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateN
                                         const newSize = parseInt(val);
                                         setPageSize(newSize);
                                         setPage(1);
-                                        fetchNotes(1, newSize);
+                                        // fetchNotes(1, newSize); // useEffect will handle this
                                     }}>
                                         <SelectTrigger className="h-8 w-[110px]">
                                             <SelectValue placeholder={pageSize.toString()} />

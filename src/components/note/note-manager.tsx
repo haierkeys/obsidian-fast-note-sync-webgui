@@ -23,6 +23,11 @@ export function NoteManager({ vault = "defaultVault", onVaultChange, onNavigateT
     const [mode, setMode] = useState<"view" | "edit">("view");
     const [selectedNote, setSelectedNote] = useState<Note | undefined>(undefined);
     const [vaults, setVaults] = useState<VaultType[]>([]);
+
+    // Lifted state for pagination
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+
     const { handleVaultList } = handleVault();
 
     useEffect(() => {
@@ -30,6 +35,11 @@ export function NoteManager({ vault = "defaultVault", onVaultChange, onNavigateT
             setVaults(data);
         });
     }, []);
+
+    // Reset page when vault changes
+    useEffect(() => {
+        setPage(1);
+    }, [vault]);
 
     const handleSelectNote = (note: Note, mode: "view" | "edit") => {
         setSelectedNote(note);
@@ -106,6 +116,10 @@ export function NoteManager({ vault = "defaultVault", onVaultChange, onNavigateT
             onVaultChange={onVaultChange}
             onSelectNote={handleSelectNote}
             onCreateNote={handleCreateNote}
+            page={page}
+            setPage={setPage}
+            pageSize={pageSize}
+            setPageSize={setPageSize}
         />
     );
 }
