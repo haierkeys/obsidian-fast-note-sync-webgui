@@ -1,15 +1,12 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useNoteHandle } from "@/components/api-handle/note-handle";
 import { ArrowLeft, Save, Pencil, Folder } from "lucide-react";
-import { useState, useEffect, Suspense, lazy } from "react";
 import { Note, NoteDetail } from "@/lib/types/note";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
-
-
-// 懒加载 MDEditor 组件，将 1MB+ 的依赖从主包中分离
-const MDEditor = lazy(() => import("@uiw/react-md-editor"));
+import MDEditor from "@uiw/react-md-editor";
+import { useState, useEffect } from "react";
 
 
 interface NoteEditorProps {
@@ -87,20 +84,20 @@ export function NoteEditor({ vault, note, mode, onBack, onSaveSuccess, onEdit }:
     return (
         <Card className="w-full h-full flex flex-col">
             <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 border-b gap-4">
-                <div className="flex items-start space-x-2 flex-1 overflow-hidden">
+                <div className="flex items-start space-x-2 flex-1 min-w-0">
                     <Button variant="ghost" size="icon" onClick={onBack} className="shrink-0 mt-0.5">
                         <ArrowLeft className="h-5 w-5" />
                     </Button>
                     {mode === "view" ? (
-                        <div className="flex items-start flex-wrap text-lg overflow-hidden break-all whitespace-normal pt-1.5">
+                        <div className="flex flex-wrap items-center text-lg break-words min-w-0">
                             {folder && (
-                                <div className="flex items-center shrink-0">
-                                    <Folder className="h-4 w-4 mr-1 text-muted-foreground" />
-                                    <span className="text-muted-foreground">{folder}</span>
+                                <>
+                                    <Folder className="h-4 w-4 mr-1 text-muted-foreground shrink-0" />
+                                    <span className="text-muted-foreground break-all">{folder}</span>
                                     <span className="text-muted-foreground mx-1">/</span>
-                                </div>
+                                </>
                             )}
-                            <span className="font-bold">{filename}</span>
+                            <span className="font-bold break-all">{filename}</span>
                         </div>
                     ) : (
                         <Input
@@ -140,20 +137,14 @@ export function NoteEditor({ vault, note, mode, onBack, onSaveSuccess, onEdit }:
                     </div>
                 ) : (
                     <div className="flex-1 min-h-[500px] overflow-hidden" data-color-mode="light">
-                        <Suspense fallback={
-                            <div className="flex items-center justify-center h-full">
-                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-                            </div>
-                        }>
-                            <MDEditor
-                                value={content}
-                                onChange={(val) => setContent(val || "")}
-                                height="100%"
-                                preview={mode === "view" ? "preview" : "live"}
-                                hideToolbar={mode === "view"}
-                                visibleDragbar={mode === "edit"}
-                            />
-                        </Suspense>
+                        <MDEditor
+                            value={content}
+                            onChange={(val) => setContent(val || "")}
+                            height="100%"
+                            preview={mode === "view" ? "preview" : "live"}
+                            hideToolbar={mode === "view"}
+                            visibleDragbar={mode === "edit"}
+                        />
                     </div>
                 )}
             </CardContent>
