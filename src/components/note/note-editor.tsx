@@ -86,19 +86,19 @@ export function NoteEditor({ vault, note, mode, onBack, onSaveSuccess, onEdit }:
 
     return (
         <Card className="w-full h-full flex flex-col">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 border-b gap-4">
-                <div className="flex items-center space-x-2 flex-1 overflow-hidden">
-                    <Button variant="ghost" size="icon" onClick={onBack} className="shrink-0">
+            <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 border-b gap-4">
+                <div className="flex items-start space-x-2 flex-1 overflow-hidden">
+                    <Button variant="ghost" size="icon" onClick={onBack} className="shrink-0 mt-0.5">
                         <ArrowLeft className="h-5 w-5" />
                     </Button>
                     {mode === "view" ? (
-                        <div className="flex items-center text-lg overflow-hidden whitespace-nowrap text-ellipsis">
+                        <div className="flex items-start flex-wrap text-lg overflow-hidden break-all whitespace-normal pt-1.5">
                             {folder && (
-                                <>
-                                    <Folder className="h-4 w-4 mr-1 text-muted-foreground shrink-0" />
+                                <div className="flex items-center shrink-0">
+                                    <Folder className="h-4 w-4 mr-1 text-muted-foreground" />
                                     <span className="text-muted-foreground">{folder}</span>
                                     <span className="text-muted-foreground mx-1">/</span>
-                                </>
+                                </div>
                             )}
                             <span className="font-bold">{filename}</span>
                         </div>
