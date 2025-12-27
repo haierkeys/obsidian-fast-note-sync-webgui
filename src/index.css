@@ -2,14 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: "LXGW WenKai Lite";
-  src: url("/fonts/LXGWWenKai-Light.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -77,7 +69,6 @@
   .w-md-editor,
   .wmde-markdown {
     @apply bg-background text-foreground;
-    font-family: "LXGW WenKai Lite", "Segoe UI", Segoe, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
   }
 }
 

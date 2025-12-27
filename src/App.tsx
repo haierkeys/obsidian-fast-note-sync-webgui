@@ -44,6 +44,11 @@ function App() {
     }
   }, [activeMenu, isLoggedIn, handleVaultList])
 
+  // 延迟加载字体
+  useEffect(() => {
+    import("./fonts.css")
+  }, [])
+
   const handleLoginSuccess = () => {
     login()
   }
