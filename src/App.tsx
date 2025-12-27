@@ -44,9 +44,98 @@ function App() {
     }
   }, [activeMenu, isLoggedIn, handleVaultList])
 
-  // 延迟加载字体
+  // 动态加载字体和配置
   useEffect(() => {
-    import("./fonts.css")
+    let isMounted = true;
+    let currentFontSet = "";
+
+    const fallbackFonts = `"Segoe UI", Segoe, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"`;
+
+    const updateFonts = (fontSet: string) => {
+      if (currentFontSet === fontSet) return;
+      currentFontSet = fontSet;
+
+      // 移除旧的注入标签
+      const oldStyle = document.getElementById("dynamic-font-style");
+      if (oldStyle) oldStyle.remove();
+      const oldLink = document.getElementById("dynamic-font-link");
+      if (oldLink) oldLink.remove();
+
+      let fontFamily = fallbackFonts;
+      let styleContent = "";
+
+      if (fontSet === "local") {
+        fontFamily = `"LXGW WenKai Lite", ${fallbackFonts}`;
+        styleContent = `
+          @font-face {
+            font-family: "LXGW WenKai Lite";
+            src: url("/fonts/LXGWWenKai-Light.woff") format("woff");
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+          }
+        `;
+      } else if (fontSet && (fontSet.startsWith("http://") || fontSet.startsWith("https://"))) {
+        if (fontSet.endsWith(".css")) {
+          const link = document.createElement("link");
+          link.id = "dynamic-font-link";
+          link.rel = "stylesheet";
+          link.href = fontSet;
+          link.crossOrigin = "anonymous";
+          document.head.appendChild(link);
+        } else {
+          fontFamily = `"CustomFont", ${fallbackFonts}`;
+          styleContent = `
+            @font-face {
+              font-family: "CustomFont";
+              src: url("${fontSet}");
+              font-weight: normal;
+              font-style: normal;
+              font-display: swap;
+            }
+          `;
+        }
+      }
+
+      // 始终应用通用样式（包含后备字体）
+      const style = document.createElement("style");
+      style.id = "dynamic-font-style";
+      style.innerHTML = `
+        ${styleContent}
+        body, input, textarea, .w-md-editor, .wmde-markdown {
+          font-family: ${fontFamily} !important;
+        }
+      `;
+      document.head.appendChild(style);
+    };
+
+    const fetchConfig = async () => {
+      try {
+        const apiUrl = env.API_URL.endsWith("/") ? env.API_URL.slice(0, -1) : env.API_URL;
+        const response = await fetch(`${apiUrl}/api/webgui/config`);
+        if (response.ok && isMounted) {
+          const res = await response.json();
+          if (res.code > 0 && res.data) {
+            updateFonts(res.data.fontSet || res.data.FontSet || "");
+          } else {
+            updateFonts("");
+          }
+        } else if (isMounted) {
+          updateFonts("");
+        }
+      } catch (error) {
+        if (isMounted) {
+          console.error("Failed to fetch webgui config:", error);
+          updateFonts("");
+        }
+      }
+    };
+
+    fetchConfig();
+
+    return () => {
+      isMounted = false;
+    };
   }, [])
 
   const handleLoginSuccess = () => {
