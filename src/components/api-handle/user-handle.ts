@@ -2,15 +2,16 @@ import { useConfirmDialog } from "@/components/context/confirm-dialog-context";
 import { addCacheBuster } from "@/lib/utils/cache-buster";
 import type { ChangePassword } from "@/lib/types/user";
 import { getBrowserLang } from "@/lib/i18n/utils";
+import { useCallback, useMemo } from "react";
 import env from "@/env.ts";
 
 
-export function handleUser() {
+export function useUserHandle() {
   const { openConfirmDialog } = useConfirmDialog() // 使用 useContext 来获取上下文值
   const token = localStorage.getItem("token")!
 
 
-  const handleUserInfo = async (logout: () => void) => {
+  const handleUserInfo = useCallback(async (logout: () => void) => {
     console.log("handleUserInfo")
     const response = await fetch(addCacheBuster(env.API_URL + "/api/user/info"), {
       method: "GET",
@@ -30,10 +31,10 @@ export function handleUser() {
     if (res.code > 200 || res.code == 0) {
       logout()
     }
-  }
+  }, [token])
 
 
-  const handleUserChangePassword = async (data: ChangePassword, callback: (data2: ChangePassword) => void) => {
+  const handleUserChangePassword = useCallback(async (data: ChangePassword, callback: (data2: ChangePassword) => void) => {
 
     const formData = { ...data }
 
@@ -58,10 +59,10 @@ export function handleUser() {
     } else {
       openConfirmDialog(res.message + ": " + res.details, "error")
     }
-  }
+  }, [token, openConfirmDialog])
 
 
-  return {
+  return useMemo(() => ({
     handleUserChangePassword, handleUserInfo
-  }
+  }), [handleUserChangePassword, handleUserInfo])
 }

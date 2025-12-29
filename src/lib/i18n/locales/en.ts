@@ -143,4 +143,5 @@ export default {
     diffLegendAdd: "Addition",
     diffLegendDel: "Deletion",
     switchLanguage: "Switch Language",
+    refresh: "Refresh",
 };

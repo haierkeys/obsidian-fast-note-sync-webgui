@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { handleVault } from "@/components/api-handle/vault-handle";
+import { useVaultHandle } from "@/components/api-handle/vault-handle";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { VaultType } from "@/lib/types/vault";
@@ -38,13 +38,13 @@ export function NoteManager({ vault = "defaultVault", onVaultChange, onNavigateT
         localStorage.setItem("notePageSize", pageSize.toString());
     }, [pageSize]);
 
-    const { handleVaultList } = handleVault();
+    const { handleVaultList } = useVaultHandle();
 
     useEffect(() => {
         handleVaultList((data) => {
             setVaults(data);
         });
-    }, []);
+    }, [handleVaultList]);
 
     // Reset page when vault changes
     useEffect(() => {

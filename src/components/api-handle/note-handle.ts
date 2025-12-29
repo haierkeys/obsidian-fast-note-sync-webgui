@@ -2,6 +2,7 @@ import { Note, NoteDetail, NoteResponse, NoteHistoryDetail, NoteHistoryListRespo
 import { useConfirmDialog } from "@/components/context/confirm-dialog-context";
 import { addCacheBuster } from "@/lib/utils/cache-buster";
 import { getBrowserLang } from "@/lib/i18n/utils";
+import { useCallback, useMemo } from "react";
 import env from "@/env.ts";
 
 
@@ -9,14 +10,14 @@ export function useNoteHandle() {
     const { openConfirmDialog } = useConfirmDialog()
     const token = localStorage.getItem("token")!
 
-    const getHeaders = () => ({
+    const getHeaders = useCallback(() => ({
         "Content-Type": "application/json",
         Domain: window.location.origin,
         Token: token,
         Lang: getBrowserLang(),
-    })
+    }), [token])
 
-    const handleNoteList = async (vault: string, page: number, pageSize: number, keyword: string = "", callback: (data: { list: Note[], pager: { page: number, pageSize: number, totalRows: number } }) => void) => {
+    const handleNoteList = useCallback(async (vault: string, page: number, pageSize: number, keyword: string = "", callback: (data: { list: Note[], pager: { page: number, pageSize: number, totalRows: number } }) => void) => {
         try {
             // Ensure page and pageSize are integers strings
             const pageStr = Math.floor(page).toString();
@@ -45,9 +46,9 @@ export function useNoteHandle() {
         } catch (error: unknown) {
             openConfirmDialog(error instanceof Error ? error.message : String(error), "error")
         }
-    }
+    }, [getHeaders, openConfirmDialog])
 
-    const handleGetNote = async (vault: string, path: string, callback: (note: NoteDetail) => void) => {
+    const handleGetNote = useCallback(async (vault: string, path: string, callback: (note: NoteDetail) => void) => {
         try {
             const response = await fetch(addCacheBuster(`${env.API_URL}/api/note?vault=${vault}&path=${encodeURIComponent(path)}`), {
                 method: "GET",
@@ -68,9 +69,9 @@ export function useNoteHandle() {
         } catch (error: unknown) {
             openConfirmDialog(error instanceof Error ? error.message : String(error), "error")
         }
-    }
+    }, [getHeaders, openConfirmDialog])
 
-    const handleSaveNote = async (
+    const handleSaveNote = useCallback(async (
         vault: string,
         path: string,
         content: string,
@@ -102,9 +103,9 @@ export function useNoteHandle() {
         } catch (error: unknown) {
             openConfirmDialog(error instanceof Error ? error.message : String(error), "error")
         }
-    }
+    }, [getHeaders, openConfirmDialog])
 
-    const handleDeleteNote = async (vault: string, path: string, pathHash: string | undefined, callback: () => void) => {
+    const handleDeleteNote = useCallback(async (vault: string, path: string, pathHash: string | undefined, callback: () => void) => {
         try {
             const body = {
                 vault,
@@ -129,9 +130,9 @@ export function useNoteHandle() {
         } catch (error: unknown) {
             openConfirmDialog(error instanceof Error ? error.message : String(error), "error")
         }
-    }
+    }, [getHeaders, openConfirmDialog])
 
-    const handleNoteHistoryList = async (vault: string, notePath: string, pathHash: string | undefined, page: number, pageSize: number, callback: (data: NoteHistoryListResponse) => void) => {
+    const handleNoteHistoryList = useCallback(async (vault: string, notePath: string, pathHash: string | undefined, page: number, pageSize: number, callback: (data: NoteHistoryListResponse) => void) => {
         try {
             const pageStr = Math.floor(page).toString();
             const pageSizeStr = Math.floor(pageSize).toString();
@@ -157,9 +158,9 @@ export function useNoteHandle() {
         } catch (error: unknown) {
             openConfirmDialog(error instanceof Error ? error.message : String(error), "error")
         }
-    }
+    }, [getHeaders, openConfirmDialog])
 
-    const handleNoteHistoryDetail = async (vault: string, id: number, callback: (data: NoteHistoryDetail) => void) => {
+    const handleNoteHistoryDetail = useCallback(async (vault: string, id: number, callback: (data: NoteHistoryDetail) => void) => {
         try {
             const response = await fetch(addCacheBuster(`${env.API_URL}/api/note/history?vault=${vault}&id=${id}`), {
                 method: "GET",
@@ -177,14 +178,21 @@ export function useNoteHandle() {
         } catch (error: unknown) {
             openConfirmDialog(error instanceof Error ? error.message : String(error), "error")
         }
-    }
+    }, [getHeaders, openConfirmDialog])
 
-    return {
+    return useMemo(() => ({
         handleNoteList,
         handleGetNote,
         handleSaveNote,
         handleDeleteNote,
         handleNoteHistoryList,
         handleNoteHistoryDetail,
-    }
+    }), [
+        handleNoteList,
+        handleGetNote,
+        handleSaveNote,
+        handleDeleteNote,
+        handleNoteHistoryList,
+        handleNoteHistoryDetail,
+    ])
 }

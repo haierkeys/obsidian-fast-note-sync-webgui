@@ -2,14 +2,15 @@ import { useConfirmDialog } from "@/components/context/confirm-dialog-context";
 import { addCacheBuster } from "@/lib/utils/cache-buster";
 import { getBrowserLang } from "@/lib/i18n/utils";
 import { VaultType } from "@/lib/types/vault";
+import { useCallback, useMemo } from "react";
 import env from "@/env.ts";
 
 
-export function handleVault() {
+export function useVaultHandle() {
   const { openConfirmDialog } = useConfirmDialog()
   const token = localStorage.getItem("token")!
 
-  const handleVaultList = async (callback: (key: VaultType[]) => void) => {
+  const handleVaultList = useCallback(async (callback: (key: VaultType[]) => void) => {
     const response = await fetch(addCacheBuster(env.API_URL + "/api/vault?limit=100"), {
       method: "GET",
       headers: {
@@ -28,9 +29,9 @@ export function handleVault() {
     } else {
       return { success: false, error: res.message + ": " + res.details }
     }
-  }
+  }, [token])
 
-  const handleVaultDelete = async (id: string) => {
+  const handleVaultDelete = useCallback(async (id: string) => {
     const data = {
       id: id,
     }
@@ -51,9 +52,9 @@ export function handleVault() {
     if (res.code > 100) {
       openConfirmDialog(res.message + ": " + res.details, "error")
     }
-  }
+  }, [token, openConfirmDialog])
 
-  const handleVaultUpdate = async (data: Partial<VaultType>, callback: (data2: VaultType) => void) => {
+  const handleVaultUpdate = useCallback(async (data: Partial<VaultType>, callback: (data2: VaultType) => void) => {
     const response = await fetch(addCacheBuster(env.API_URL + "/api/vault"), {
       method: "POST",
       body: JSON.stringify(data),
@@ -74,11 +75,11 @@ export function handleVault() {
     } else {
       openConfirmDialog(res.message + ": " + res.details, "error")
     }
-  }
+  }, [token, openConfirmDialog])
 
-  return {
+  return useMemo(() => ({
     handleVaultList,
     handleVaultDelete,
     handleVaultUpdate,
-  }
+  }), [handleVaultList, handleVaultDelete, handleVaultUpdate])
 }

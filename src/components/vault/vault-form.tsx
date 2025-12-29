@@ -1,12 +1,13 @@
-import { handleVault } from "@/components/api-handle/vault-handle"
-import { vaultSchema } from "@/lib/validations/vault-schema"
-import { zodResolver } from "@hookform/resolvers/zod"
-import type { VaultType } from "@/lib/types/vault"
-import { Button } from "@/components/ui/button"
-import { useTranslation } from "react-i18next"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { useForm } from "react-hook-form"
+import { useVaultHandle } from "@/components/api-handle/vault-handle";
+import { vaultSchema } from "@/lib/validations/vault-schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { VaultType } from "@/lib/types/vault";
+import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+
 
 interface VaultFormProps {
   config?: VaultType
@@ -16,7 +17,7 @@ interface VaultFormProps {
 export function VaultForm({ config, onSubmit }: VaultFormProps) {
   const { t } = useTranslation()
 
-  const { handleVaultUpdate } = handleVault()
+  const { handleVaultUpdate } = useVaultHandle()
 
   // prettier-ignore
   const { register, handleSubmit, formState: { errors } } = useForm<VaultType>({

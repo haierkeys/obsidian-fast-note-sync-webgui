@@ -111,4 +111,5 @@ export default {
     diffLegendAdd: "新增",
     diffLegendDel: "删除",
     switchLanguage: "切换语言",
+    refresh: "刷新",
 };

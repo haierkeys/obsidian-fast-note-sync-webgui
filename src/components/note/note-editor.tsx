@@ -1,12 +1,12 @@
-import { ArrowLeft, Save, Pencil, Folder, History } from "lucide-react";
+import { ArrowLeft, Save, Pencil, Folder, History, RefreshCcw } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useNoteHandle } from "@/components/api-handle/note-handle";
+import { useState, useEffect, useCallback } from "react";
 import { Note, NoteDetail } from "@/lib/types/note";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import MDEditor from "@uiw/react-md-editor";
-import { useState, useEffect } from "react";
 
 
 interface NoteEditorProps {
@@ -29,7 +29,7 @@ export function NoteEditor({ vault, note, mode, onBack, onSaveSuccess, onEdit, o
     const [saving, setSaving] = useState(false);
     const [originalNote, setOriginalNote] = useState<NoteDetail | null>(null);
 
-    useEffect(() => {
+    const loadNote = useCallback(() => {
         if (note) {
             setPath(note.path.replace(/\.md$/, ""));
             setLoading(true);
@@ -43,14 +43,18 @@ export function NoteEditor({ vault, note, mode, onBack, onSaveSuccess, onEdit, o
             setContent("");
             setOriginalNote(null);
         }
-    }, [note, vault]);
+    }, [note, vault, handleGetNote]);
+
+    useEffect(() => {
+        loadNote();
+    }, [loadNote]);
 
     const handleSave = () => {
         if (!path) return;
         setSaving(true);
 
         const fullPath = path.endsWith(".md") ? path : path + ".md";
-        const options: any = {};
+        const options: { pathHash?: string; srcPath?: string; srcPathHash?: string; contentHash?: string } = {};
         if (originalNote) {
             // Editing existing note
             if (fullPath !== originalNote.path) {
@@ -110,7 +114,10 @@ export function NoteEditor({ vault, note, mode, onBack, onSaveSuccess, onEdit, o
                                 // Also filter control characters (0-31)
                                 // Trim leading and trailing spaces
                                 const sanitized = e.target.value
-                                    .replace(/[<>:"\\|?*\x00-\x1f]/g, '')
+                                    .replace(/[<>:"\\|?*]/g, '')
+                                    .split('')
+                                    .filter(c => c.charCodeAt(0) >= 32)
+                                    .join('')
                                     .trim();
                                 setPath(sanitized);
                             }}
@@ -126,6 +133,11 @@ export function NoteEditor({ vault, note, mode, onBack, onSaveSuccess, onEdit, o
                     </Button>
                 ) : (
                     <div className="flex gap-2">
+                        {mode === "view" && note && (
+                            <Button onClick={loadNote} variant="outline" size="icon" className="shrink-0" title={t("refresh")}>
+                                <RefreshCcw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+                            </Button>
+                        )}
                         {note && onViewHistory && (
                             <Button onClick={onViewHistory} variant="outline" className="shrink-0">
                                 <History className="mr-2 h-4 w-4" />

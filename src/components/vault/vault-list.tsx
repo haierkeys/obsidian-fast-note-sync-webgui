@@ -2,12 +2,12 @@ import { Pencil, Trash2, Plus, Clipboard, FileText, Database, Clock } from "luci
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useConfirmDialog } from "@/components/context/confirm-dialog-context";
-import { handleVault } from "@/components/api-handle/vault-handle";
+import { useVaultHandle } from "@/components/api-handle/vault-handle";
 import { VaultForm } from "@/components/vault/vault-form";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { VaultType } from "@/lib/types/vault";
-import { useState, useEffect } from "react";
 import env from "@/env.ts";
 
 
@@ -21,18 +21,18 @@ export function VaultList({ onNavigateToNotes }: VaultListProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingVault, setEditingVault] = useState<VaultType | undefined>(undefined)
 
-  const { handleVaultList, handleVaultDelete } = handleVault()
+  const { handleVaultList, handleVaultDelete } = useVaultHandle()
   const { openConfirmDialog } = useConfirmDialog()
 
-  const loadVaults = () => {
+  const loadVaults = useCallback(() => {
     handleVaultList((data) => {
       setVaults(data)
     })
-  }
+  }, [handleVaultList])
 
   useEffect(() => {
     loadVaults()
-  }, [])
+  }, [loadVaults])
 
   const handleDelete = async (id: string) => {
     openConfirmDialog(t("confirmDelete"), "confirm", async () => {

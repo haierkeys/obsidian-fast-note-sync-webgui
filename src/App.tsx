@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
 import env from "@/env.ts";
 
-import { handleVault } from "./components/api-handle/vault-handle";
+import { useVaultHandle } from "./components/api-handle/vault-handle";
 import { useVersion } from "./components/api-handle/use-version";
 import { useAuth } from "./components/context/auth-context";
 
@@ -19,7 +19,7 @@ function App() {
   const { t } = useTranslation()
   const { isLoggedIn, login, logout } = useAuth()
   const { versionInfo } = useVersion()
-  const { handleVaultList } = handleVault()
+  const { handleVaultList } = useVaultHandle()
 
   const [isRegistering, setIsRegistering] = useState(false)
   const [activeMenu, setActiveMenu] = useState("vaults")
