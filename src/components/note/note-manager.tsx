@@ -16,9 +16,17 @@ interface NoteManagerProps {
     vault?: string;
     onVaultChange?: (vault: string) => void;
     onNavigateToVaults?: () => void;
+    isMaximized?: boolean;
+    onToggleMaximize?: () => void;
 }
 
-export function NoteManager({ vault = "defaultVault", onVaultChange, onNavigateToVaults }: NoteManagerProps) {
+export function NoteManager({
+    vault = "defaultVault",
+    onVaultChange,
+    onNavigateToVaults,
+    isMaximized = false,
+    onToggleMaximize
+}: NoteManagerProps) {
     const { t } = useTranslation();
     const [view, setView] = useState<"list" | "editor">("list");
     const [mode, setMode] = useState<"view" | "edit">("view");
@@ -131,6 +139,8 @@ export function NoteManager({ vault = "defaultVault", onVaultChange, onNavigateT
                 onSaveSuccess={handleSaveSuccess}
                 onEdit={handleEdit}
                 onViewHistory={() => selectedNote && handleViewHistory(selectedNote)}
+                isMaximized={isMaximized}
+                onToggleMaximize={onToggleMaximize}
             />
         );
     } else {

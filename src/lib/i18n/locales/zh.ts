@@ -112,4 +112,6 @@ export default {
     diffLegendDel: "删除",
     switchLanguage: "切换语言",
     refresh: "刷新",
+    maximize: "最大化",
+    restore: "还原",
 };

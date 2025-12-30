@@ -1,4 +1,4 @@
-import { ArrowLeft, Save, Pencil, Folder, History, RefreshCcw } from "lucide-react";
+import { ArrowLeft, Save, Pencil, Folder, History, RefreshCcw, Maximize2, Minimize2 } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useNoteHandle } from "@/components/api-handle/note-handle";
 import { useState, useEffect, useCallback } from "react";
@@ -17,9 +17,21 @@ interface NoteEditorProps {
     onSaveSuccess: () => void;
     onEdit?: () => void;
     onViewHistory?: () => void;
+    isMaximized?: boolean;
+    onToggleMaximize?: () => void;
 }
 
-export function NoteEditor({ vault, note, mode, onBack, onSaveSuccess, onEdit, onViewHistory }: NoteEditorProps) {
+export function NoteEditor({
+    vault,
+    note,
+    mode,
+    onBack,
+    onSaveSuccess,
+    onEdit,
+    onViewHistory,
+    isMaximized = false,
+    onToggleMaximize
+}: NoteEditorProps) {
     const { t } = useTranslation();
     const { handleGetNote, handleSaveNote } = useNoteHandle();
 
@@ -126,30 +138,37 @@ export function NoteEditor({ vault, note, mode, onBack, onSaveSuccess, onEdit, o
                         />
                     )}
                 </div>
-                {mode === "edit" ? (
-                    <Button onClick={handleSave} disabled={saving || loading || !path} className="shrink-0">
-                        <Save className="mr-2 h-4 w-4" />
-                        {saving ? t("saving") : t("save")}
-                    </Button>
-                ) : (
-                    <div className="flex gap-2">
-                        {mode === "view" && note && (
-                            <Button onClick={loadNote} variant="outline" size="icon" className="shrink-0" title={t("refresh")}>
-                                <RefreshCcw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
-                            </Button>
-                        )}
-                        {note && onViewHistory && (
-                            <Button onClick={onViewHistory} variant="outline" className="shrink-0">
-                                <History className="mr-2 h-4 w-4" />
-                                {t("history") || "历史"}
-                            </Button>
-                        )}
-                        <Button onClick={onEdit} variant="outline" className="shrink-0">
-                            <Pencil className="mr-2 h-4 w-4" />
-                            {t("edit")}
+                <div className="flex gap-2 items-center">
+                    {mode === "edit" ? (
+                        <Button onClick={handleSave} disabled={saving || loading || !path} className="shrink-0">
+                            <Save className="mr-2 h-4 w-4" />
+                            {saving ? t("saving") : t("save")}
                         </Button>
-                    </div>
-                )}
+                    ) : (
+                        <div className="flex gap-2">
+                            {mode === "view" && note && (
+                                <Button onClick={loadNote} variant="outline" size="icon" className="shrink-0" title={t("refresh")}>
+                                    <RefreshCcw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+                                </Button>
+                            )}
+                            {note && onViewHistory && (
+                                <Button onClick={onViewHistory} variant="outline" className="shrink-0">
+                                    <History className="mr-2 h-4 w-4" />
+                                    {t("history") || "历史"}
+                                </Button>
+                            )}
+                            <Button onClick={onEdit} variant="outline" className="shrink-0">
+                                <Pencil className="mr-2 h-4 w-4" />
+                                {t("edit")}
+                            </Button>
+                        </div>
+                    )}
+                    {onToggleMaximize && (
+                        <Button onClick={onToggleMaximize} variant="outline" size="icon" className="shrink-0" title={isMaximized ? t("restore") : t("maximize")}>
+                            {isMaximized ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+                        </Button>
+                    )}
+                </div>
             </CardHeader>
             <CardContent className="flex-1 p-4 flex flex-col">
                 {loading ? (

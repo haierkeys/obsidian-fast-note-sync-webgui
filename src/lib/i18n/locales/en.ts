@@ -144,4 +144,6 @@ export default {
     diffLegendDel: "Deletion",
     switchLanguage: "Switch Language",
     refresh: "Refresh",
+    maximize: "Maximize",
+    restore: "Restore",
 };

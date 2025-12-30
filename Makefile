@@ -15,7 +15,7 @@ test:
 	@echo ${REPO}
 
 dev:
-	pnpm run de
+	pnpm run dev
 
 air:
 	pnpm run dev

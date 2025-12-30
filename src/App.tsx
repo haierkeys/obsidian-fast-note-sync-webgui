@@ -27,6 +27,7 @@ function App() {
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [showChangePassword, setShowChangePassword] = useState(false)
   const [showMobileSidebar, setShowMobileSidebar] = useState(false)
+  const [isMaximized, setIsMaximized] = useState(false)
 
   // 当切换到笔记页面时,从 API 获取仓库列表并验证当前仓库是否有效
   useEffect(() => {
@@ -195,9 +196,10 @@ function App() {
 
   return (
     <div className="flex justify-center w-full min-h-screen bg-gray-100">
-      <div className="flex flex-col rounded-lg border text-card-foreground shadow-sm w-full max-w-[1400px] m-2 sm:m-4 md:m-10 bg-gray-50 overflow-hidden">
+      <div className={`flex flex-col rounded-lg border text-card-foreground shadow-sm w-full ${isMaximized ? "m-0 rounded-none border-none h-screen" : "max-w-[1400px] m-2 sm:m-4 md:m-10 bg-gray-50 overflow-hidden"}`}>
         {/* Top Navigation Bar */}
-        <div className="border-b px-3 sm:px-6 py-3 flex items-center justify-between bg-gray-50 rounded-t-lg">
+        {!isMaximized && (
+          <div className="border-b px-3 sm:px-6 py-3 flex items-center justify-between bg-gray-50 rounded-t-lg">
           {/* Logo and Site Name */}
           <div className="flex items-center space-x-2 sm:space-x-3">
             {/* Mobile Menu Button */}
@@ -249,11 +251,12 @@ function App() {
             </div>
           )}
         </div>
+        )}
 
         {/* Content Area with Sidebar and Main Content */}
-        <div className="flex flex-1 relative">
+        <div className="flex flex-1 relative overflow-hidden">
           {/* Left Sidebar - Desktop and Mobile */}
-          {isLoggedIn && (
+          {isLoggedIn && !isMaximized && (
             <>
               {/* Mobile Sidebar Overlay */}
               {showMobileSidebar && <div className="fixed inset-0 bg-black bg-opacity-50 z-10 md:hidden" onClick={() => setShowMobileSidebar(false)} />}
@@ -298,7 +301,7 @@ function App() {
           )}
 
           {/* Main Content */}
-          <div className={`flex-1 py-6 sm:py-8 px-2 sm:px-4 md:px-6 lg:px-8 ${!isLoggedIn ? "w-full" : ""}`}>
+          <div className={`flex-1 ${!isMaximized ? "py-6 sm:py-8 px-2 sm:px-4 md:px-6 lg:px-8" : "p-0"} ${!isLoggedIn ? "w-full" : ""}`}>
             {isLoggedIn ? (
               showChangePassword ? (
                 <div className="max-w-md mx-auto bg-white p-4 sm:p-6 rounded-lg shadow-md">
@@ -310,6 +313,8 @@ function App() {
                   vault={activeVault}
                   onVaultChange={setActiveVault}
                   onNavigateToVaults={() => setActiveMenu("vaults")}
+                  isMaximized={isMaximized}
+                  onToggleMaximize={() => setIsMaximized(!isMaximized)}
                 />
               ) : (
                 <VaultList onNavigateToNotes={(vaultName) => {
@@ -326,7 +331,8 @@ function App() {
         </div>
 
         {/* Footer */}
-        <div className="border-t px-4 py-3 bg-gray-50 text-center text-sm text-gray-600 rounded-b-lg">
+        {!isMaximized && (
+          <div className="border-t px-4 py-3 bg-gray-50 text-center text-sm text-gray-600 rounded-b-lg">
           <div className="flex flex-col sm:flex-row justify-center items-center gap-2">
             <span>© 2024 Obsidian Fast Note Sync Service</span>
             <span className="hidden sm:inline">•</span>
@@ -344,6 +350,7 @@ function App() {
             )}
           </div>
         </div>
+        )}
       </div>
     </div>
   )
