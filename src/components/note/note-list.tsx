@@ -1,6 +1,7 @@
 import { FileText, Trash2, RefreshCw, Plus, Eye, Pencil, Calendar, Clock, ChevronLeft, ChevronRight, History, Search, X } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useConfirmDialog } from "@/components/context/confirm-dialog-context";
 import { useNoteHandle } from "@/components/api-handle/note-handle";
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ interface NoteListProps {
 export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateNote, page, setPage, pageSize, setPageSize, onViewHistory }: NoteListProps) {
     const { t } = useTranslation();
     const { handleNoteList, handleDeleteNote } = useNoteHandle();
+    const { openConfirmDialog } = useConfirmDialog();
     const [notes, setNotes] = useState<Note[]>([]);
     const [loading, setLoading] = useState(false);
     const [totalRows, setTotalRows] = useState(0);
@@ -74,8 +76,11 @@ export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateN
 
     const onDelete = (e: React.MouseEvent, note: Note) => {
         e.stopPropagation();
-        handleDeleteNote(vault, note.path, note.pathHash, () => {
-            fetchNotes();
+        const title = note.path.replace(/\.md$/, "");
+        openConfirmDialog(t("deleteNoteConfirm", { title }), "confirm", () => {
+            handleDeleteNote(vault, note.path, note.pathHash, () => {
+                fetchNotes();
+            });
         });
     };
 

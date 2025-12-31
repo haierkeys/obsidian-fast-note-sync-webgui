@@ -1,10 +1,10 @@
+import { LogOut, Menu, X, Clipboard, Database, FileText, RefreshCw, GitBranch, Settings, Trash2 } from "lucide-react";
 import { useConfirmDialog } from "@/components/context/confirm-dialog-context";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { ChangePassword } from "@/components/user/change-password";
 import { RegisterForm } from "@/components/user/register-form";
 import { NoteManager } from "@/components/note/note-manager";
 import { VaultList } from "@/components/vault/vault-list";
-import { LogOut, Menu, X, Clipboard } from "lucide-react";
 import { LoginForm } from "@/components/user/login-form";
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
@@ -150,9 +150,12 @@ function App() {
   }
 
   const menuItems = [
-    { id: "vaults", label: t("menuVaults") },
-    { id: "notes", label: t("menuNotes") },
-    { id: "sync", label: t("menuSync") },
+    { id: "vaults", label: t("menuVaults"), icon: Database },
+    { id: "notes", label: t("menuNotes"), icon: FileText },
+    { id: "trash", label: t("menuTrash"), icon: Trash2, isPlanned: true },
+    { id: "sync", label: t("menuSync"), icon: RefreshCw, isPlanned: true },
+    { id: "git", label: t("menuGit"), icon: GitBranch, isPlanned: true },
+    { id: "settings", label: t("menuSettings"), icon: Settings, isPlanned: true },
   ]
 
   const { openConfirmDialog } = useConfirmDialog()
@@ -274,19 +277,28 @@ function App() {
                   <h2 className="text-lg font-semibold mb-4">{t("navigation")}</h2>
                   <nav className="space-y-2">
                     {menuItems.map((item) => (
-                      <button
-                        key={item.id}
-                        onClick={() => {
-                          if (item.id === "sync") {
-                            openConfirmDialog(t("underConstruction"), "info")
-                            return
-                          }
-                          setActiveMenu(item.id)
-                          setShowMobileSidebar(false)
-                        }}
-                        className={`w-full text-left px-3 py-2 rounded-md transition-colors whitespace-nowrap ${activeMenu === item.id ? "bg-blue-100 text-blue-700" : "hover:bg-gray-100"}`}>
-                        {item.label}
-                      </button>
+                      <div key={item.id} className="relative group">
+                        <button
+                          onClick={() => {
+                            if (item.isPlanned) {
+                              openConfirmDialog(t("underConstruction"), "info")
+                              return
+                            }
+                            setActiveMenu(item.id)
+                            setShowMobileSidebar(false)
+                          }}
+                          className={`w-full flex items-center px-3 py-2 rounded-md transition-colors whitespace-nowrap ${activeMenu === item.id ? "bg-blue-100 text-blue-700" : "hover:bg-gray-100"}`}>
+                          <item.icon className="mr-3 h-4 w-4" />
+                          {item.label}
+                        </button>
+                        {item.isPlanned && (
+                          <div className="absolute right-0 top-0 pointer-events-none">
+                            <span className="px-1 py-0.5 text-[9px] font-medium bg-blue-100 text-blue-600 rounded-bl-md rounded-tr-md border-b border-l border-blue-200 block scale-90 origin-top-right">
+                              {t("planned")}
+                            </span>
+                          </div>
+                        )}
+                      </div>
                     ))}
                   </nav>
                   <div className="mt-4 pt-4 border-t">

@@ -70,7 +70,10 @@ export default {
     submitting: "提交中...",
     menuVaults: "筆記倉庫",
     menuNotes: "筆記管理",
-    menuSync: "遠端同步",
+    menuTrash: "回收站",
+    menuSync: "遠端備份",
+    menuSettings: "系統設置",
+    menuGit: "Git 自動化",
     navigation: "功能導航",
     note: "筆記",
     notes: "筆記列表",
@@ -111,4 +114,5 @@ export default {
     diffLegendAdd: "新增",
     diffLegendDel: "刪除",
     switchLanguage: "切換語言",
+    planned: "待開發",
 };
