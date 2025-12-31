@@ -44,8 +44,8 @@
     "@types/node": "^22.19.3",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
-    "@typescript-eslint/eslint-plugin": "^8.50.1",
-    "@typescript-eslint/parser": "^8.50.1",
+    "@typescript-eslint/eslint-plugin": "^8.51.0",
+    "@typescript-eslint/parser": "^8.51.0",
     "@vitejs/plugin-react": "^4.7.0",
     "autoprefixer": "^10.4.23",
     "eslint": "^9.39.2",
@@ -61,6 +61,7 @@
   },
   "pnpm": {
     "ignoredBuiltDependencies": [
+      "core-js",
       "esbuild"
     ]
   }
