@@ -17,7 +17,7 @@ export function useNoteHandle() {
         Lang: getBrowserLang(),
     }), [token])
 
-    const handleNoteList = useCallback(async (vault: string, page: number, pageSize: number, keyword: string = "", callback: (data: { list: Note[], pager: { page: number, pageSize: number, totalRows: number } }) => void) => {
+    const handleNoteList = useCallback(async (vault: string, page: number, pageSize: number, keyword: string = "", isRecycle: boolean = false, callback: (data: { list: Note[], pager: { page: number, pageSize: number, totalRows: number } }) => void) => {
         try {
             // Ensure page and pageSize are integers strings
             const pageStr = Math.floor(page).toString();
@@ -26,6 +26,9 @@ export function useNoteHandle() {
             let url = `${env.API_URL}/api/notes?vault=${vault}&page=${pageStr}&pageSize=${pageSizeStr}`;
             if (keyword) {
                 url += `&keyword=${encodeURIComponent(keyword)}`;
+            }
+            if (isRecycle) {
+                url += `&isRecycle=1`;
             }
 
             const response = await fetch(addCacheBuster(url), {
@@ -48,11 +51,14 @@ export function useNoteHandle() {
         }
     }, [getHeaders, openConfirmDialog])
 
-    const handleGetNote = useCallback(async (vault: string, path: string, pathHash: string | undefined, callback: (note: NoteDetail) => void) => {
+    const handleGetNote = useCallback(async (vault: string, path: string, pathHash: string | undefined, isRecycle: boolean = false, callback: (note: NoteDetail) => void) => {
         try {
             let url = `${env.API_URL}/api/note?vault=${vault}&path=${encodeURIComponent(path)}`;
             if (pathHash) {
                 url += `&pathHash=${pathHash}`;
+            }
+            if (isRecycle) {
+                url += `&isRecycle=1`;
             }
             const response = await fetch(addCacheBuster(url), {
                 method: "GET",
@@ -80,7 +86,8 @@ export function useNoteHandle() {
         path: string,
         content: string,
         options: { pathHash?: string; srcPath?: string; srcPathHash?: string; contentHash?: string } = {},
-        callback: () => void
+        onSuccess: () => void,
+        onError?: (error: string) => void
     ) => {
         try {
             const body = {
@@ -100,12 +107,16 @@ export function useNoteHandle() {
             const res: NoteResponse<unknown> = await response.json()
             if (res.code > 0 && res.code <= 200) {
                 openConfirmDialog(res.message, "success")
-                callback()
+                onSuccess()
             } else {
-                openConfirmDialog(res.message + (res.details ? ": " + res.details.join(", ") : ""), "error")
+                const errMsg = res.message + (res.details ? ": " + res.details.join(", ") : "");
+                openConfirmDialog(errMsg, "error")
+                if (onError) onError(errMsg)
             }
         } catch (error: unknown) {
-            openConfirmDialog(error instanceof Error ? error.message : String(error), "error")
+            const errMsg = error instanceof Error ? error.message : String(error);
+            openConfirmDialog(errMsg, "error")
+            if (onError) onError(errMsg)
         }
     }, [getHeaders, openConfirmDialog])
 
@@ -136,13 +147,16 @@ export function useNoteHandle() {
         }
     }, [getHeaders, openConfirmDialog])
 
-    const handleNoteHistoryList = useCallback(async (vault: string, notePath: string, pathHash: string | undefined, page: number, pageSize: number, callback: (data: NoteHistoryListResponse) => void) => {
+    const handleNoteHistoryList = useCallback(async (vault: string, notePath: string, pathHash: string | undefined, page: number, pageSize: number, isRecycle: boolean = false, callback: (data: NoteHistoryListResponse) => void) => {
         try {
             const pageStr = Math.floor(page).toString();
             const pageSizeStr = Math.floor(pageSize).toString();
             let url = `${env.API_URL}/api/note/histories?vault=${vault}&path=${encodeURIComponent(notePath)}&page=${pageStr}&pageSize=${pageSizeStr}`;
             if (pathHash) {
                 url += `&pathHash=${pathHash}`;
+            }
+            if (isRecycle) {
+                url += `&isRecycle=1`;
             }
             const response = await fetch(addCacheBuster(url), {
                 method: "GET",

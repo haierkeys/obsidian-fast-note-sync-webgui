@@ -18,6 +18,7 @@ interface NoteManagerProps {
     onNavigateToVaults?: () => void;
     isMaximized?: boolean;
     onToggleMaximize?: () => void;
+    isRecycle?: boolean;
 }
 
 export function NoteManager({
@@ -25,7 +26,8 @@ export function NoteManager({
     onVaultChange,
     onNavigateToVaults,
     isMaximized = false,
-    onToggleMaximize
+    onToggleMaximize,
+    isRecycle = false
 }: NoteManagerProps) {
     const { t } = useTranslation();
     const [view, setView] = useState<"list" | "editor">("list");
@@ -61,7 +63,7 @@ export function NoteManager({
 
     const handleSelectNote = (note: Note, mode: "view" | "edit") => {
         setSelectedNote(note);
-        setMode(mode);
+        setMode(isRecycle ? "view" : mode);
         setView("editor");
     };
 
@@ -80,12 +82,18 @@ export function NoteManager({
         }
     };
 
-    const handleSaveSuccess = () => {
+    const handleSaveSuccess = (newPath: string, newPathHash: string) => {
         setMode("view");
         // 如果是新创建的笔记，由于 selectedNote 可能还是 undefined
-        // 这里需要 fetchNote 或者根据 fullPath 重新选中，
-        // 但为了简单，如果保存成功且没有 selectedNote，可以先回列表
-        if (!selectedNote) {
+        // 这里需要 fetchNote 或者根据 fullPath 重新选中
+        if (selectedNote) {
+            setSelectedNote({
+                ...selectedNote,
+                path: newPath,
+                pathHash: newPathHash
+            });
+        } else {
+            // 新建笔记保存成功后回列表
             setView("list");
         }
     };
@@ -141,6 +149,7 @@ export function NoteManager({
                 onViewHistory={() => selectedNote && handleViewHistory(selectedNote)}
                 isMaximized={isMaximized}
                 onToggleMaximize={onToggleMaximize}
+                isRecycle={isRecycle}
             />
         );
     } else {
@@ -156,6 +165,7 @@ export function NoteManager({
                 pageSize={pageSize}
                 setPageSize={setPageSize}
                 onViewHistory={handleViewHistory}
+                isRecycle={isRecycle}
             />
         );
     }
@@ -173,6 +183,7 @@ export function NoteManager({
                     vault={vault}
                     notePath={selectedNoteForHistory.path}
                     pathHash={selectedNoteForHistory.pathHash}
+                    isRecycle={isRecycle}
                 />
             )}
         </>

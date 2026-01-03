@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import env from "@/env.ts";
 
 import { useVaultHandle } from "./components/api-handle/vault-handle";
+import { useUserHandle } from "./components/api-handle/user-handle";
 import { useVersion } from "./components/api-handle/use-version";
 import { useAuth } from "./components/context/auth-context";
 
@@ -20,6 +21,7 @@ function App() {
   const { isLoggedIn, login, logout } = useAuth()
   const { versionInfo } = useVersion()
   const { handleVaultList } = useVaultHandle()
+  const { handleUserInfo } = useUserHandle()
 
   const [isRegistering, setIsRegistering] = useState(false)
   const [activeMenu, setActiveMenu] = useState("vaults")
@@ -28,6 +30,14 @@ function App() {
   const [showChangePassword, setShowChangePassword] = useState(false)
   const [showMobileSidebar, setShowMobileSidebar] = useState(false)
   const [isMaximized, setIsMaximized] = useState(false)
+  const [registerIsEnable, setRegisterIsEnable] = useState(true)
+
+  // 验证用户登录状态
+  useEffect(() => {
+    if (isLoggedIn) {
+      handleUserInfo(logout)
+    }
+  }, [isLoggedIn, handleUserInfo, logout])
 
   // 当切换到笔记页面时,从 API 获取仓库列表并验证当前仓库是否有效
   useEffect(() => {
@@ -119,6 +129,9 @@ function App() {
           const res = await response.json();
           if (res.code > 0 && res.data) {
             updateFonts(res.data.fontSet || res.data.FontSet || "");
+            if (res.data.registerIsEnable !== undefined) {
+              setRegisterIsEnable(res.data.registerIsEnable);
+            }
           } else {
             updateFonts("");
           }
@@ -152,7 +165,7 @@ function App() {
   const menuItems = [
     { id: "vaults", label: t("menuVaults"), icon: Database },
     { id: "notes", label: t("menuNotes"), icon: FileText },
-    { id: "trash", label: t("menuTrash"), icon: Trash2, isPlanned: true },
+    { id: "trash", label: t("menuTrash"), icon: Trash2 },
     { id: "sync", label: t("menuSync"), icon: RefreshCw, isPlanned: true },
     { id: "git", label: t("menuGit"), icon: GitBranch, isPlanned: true },
     { id: "settings", label: t("menuSettings"), icon: Settings, isPlanned: true },
@@ -322,11 +335,22 @@ function App() {
                 </div>
               ) : activeMenu === "notes" ? (
                 <NoteManager
+                  key={activeMenu}
                   vault={activeVault}
                   onVaultChange={setActiveVault}
                   onNavigateToVaults={() => setActiveMenu("vaults")}
                   isMaximized={isMaximized}
                   onToggleMaximize={() => setIsMaximized(!isMaximized)}
+                />
+              ) : activeMenu === "trash" ? (
+                <NoteManager
+                  key={activeMenu}
+                  vault={activeVault}
+                  onVaultChange={setActiveVault}
+                  onNavigateToVaults={() => setActiveMenu("vaults")}
+                  isMaximized={isMaximized}
+                  onToggleMaximize={() => setIsMaximized(!isMaximized)}
+                  isRecycle={true}
                 />
               ) : (
                 <VaultList onNavigateToNotes={(vaultName) => {
@@ -337,7 +361,7 @@ function App() {
             ) : isRegistering ? (
               <RegisterForm onSuccess={handleRegisterSuccess} onBackToLogin={() => setIsRegistering(false)} />
             ) : (
-              <LoginForm onSuccess={handleLoginSuccess} onRegister={() => setIsRegistering(true)} />
+              <LoginForm onSuccess={handleLoginSuccess} onRegister={() => setIsRegistering(true)} registerIsEnable={registerIsEnable} />
             )}
           </div>
         </div>

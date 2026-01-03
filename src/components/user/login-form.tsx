@@ -13,9 +13,10 @@ import { useForm } from "react-hook-form";
 interface LoginFormProps {
   onSuccess: () => void
   onRegister: () => void
+  registerIsEnable?: boolean
 }
 
-export function LoginForm({ onSuccess, onRegister }: LoginFormProps) {
+export function LoginForm({ onSuccess, onRegister, registerIsEnable = true }: LoginFormProps) {
   const { t, i18n } = useTranslation()
 
   //登录相关
@@ -44,6 +45,14 @@ export function LoginForm({ onSuccess, onRegister }: LoginFormProps) {
     } else {
       openConfirmDialog(result.error!)
     }
+  }
+
+  const handleRegisterClick = () => {
+    if (!registerIsEnable) {
+      openConfirmDialog(t("registerClosed"), "info")
+      return
+    }
+    onRegister()
   }
 
   return (
@@ -91,7 +100,7 @@ export function LoginForm({ onSuccess, onRegister }: LoginFormProps) {
         </Button>
 
         <div className="text-center mt-4">
-          <Button variant="link" onClick={onRegister} type="button">
+          <Button variant="link" onClick={handleRegisterClick} type="button">
             {t("noAccount")} {t("register")}
           </Button>
         </div>

@@ -24,6 +24,23 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 }) => {
   const { t } = useTranslation()
 
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isOpen) return;
+      if (e.key === "Enter") {
+        e.preventDefault();
+        if (type === "confirm" && onConfirm) {
+          onConfirm();
+        } else {
+          onCancel();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, type, onConfirm, onCancel]);
+
   let title
   if (type == "success") {
     title = (

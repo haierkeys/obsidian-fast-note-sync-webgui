@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import MDEditor from "@uiw/react-md-editor";
+import { hashCode } from "@/lib/utils/hash";
 import env from "@/env.ts";
 
 
@@ -15,11 +16,12 @@ interface NoteEditorProps {
     note?: Note; // If undefined, it's a new note
     mode: "view" | "edit";
     onBack: () => void;
-    onSaveSuccess: () => void;
+    onSaveSuccess: (path: string, pathHash: string) => void;
     onEdit?: () => void;
     onViewHistory?: () => void;
     isMaximized?: boolean;
     onToggleMaximize?: () => void;
+    isRecycle?: boolean;
 }
 
 export function NoteEditor({
@@ -31,7 +33,8 @@ export function NoteEditor({
     onEdit,
     onViewHistory,
     isMaximized = false,
-    onToggleMaximize
+    onToggleMaximize,
+    isRecycle = false
 }: NoteEditorProps) {
     const { t } = useTranslation();
     const { handleGetNote, handleSaveNote } = useNoteHandle();
@@ -46,7 +49,7 @@ export function NoteEditor({
         if (note) {
             setPath(note.path.replace(/\.md$/, ""));
             setLoading(true);
-            handleGetNote(vault, note.path, note.pathHash, (data) => {
+            handleGetNote(vault, note.path, note.pathHash, isRecycle, (data) => {
                 setOriginalNote(data);
                 setContent(data.content);
                 setLoading(false);
@@ -56,7 +59,7 @@ export function NoteEditor({
             setContent("");
             setOriginalNote(null);
         }
-    }, [note, vault, handleGetNote]);
+    }, [note, vault, handleGetNote, isRecycle]);
 
     useEffect(() => {
         loadNote();
@@ -117,23 +120,23 @@ export function NoteEditor({
         setSaving(true);
 
         const fullPath = path.endsWith(".md") ? path : path + ".md";
-        const options: { pathHash?: string; srcPath?: string; srcPathHash?: string; contentHash?: string } = {};
+        const options: { pathHash?: string; srcPath?: string; srcPathHash?: string; contentHash?: string } = {
+            pathHash: hashCode(fullPath),
+            contentHash: hashCode(content)
+        };
+
         if (originalNote) {
             // Editing existing note
-            if (fullPath !== originalNote.path) {
-                // Renaming
-                options.srcPath = originalNote.path;
-                options.srcPathHash = originalNote.pathHash;
-                options.pathHash = originalNote.pathHash;
-            } else {
-                options.pathHash = originalNote.pathHash;
-                options.contentHash = originalNote.contentHash;
-            }
+            // Always set srcPath and srcPathHash to original path when editing
+            options.srcPath = originalNote.path;
+            options.srcPathHash = hashCode(originalNote.path);
         }
 
         handleSaveNote(vault, fullPath, content, options, () => {
             setSaving(false);
-            onSaveSuccess();
+            onSaveSuccess(fullPath, options.pathHash || "");
+        }, () => {
+            setSaving(false);
         });
     };
 
@@ -208,10 +211,12 @@ export function NoteEditor({
                                     {t("history") || "历史"}
                                 </Button>
                             )}
-                            <Button onClick={onEdit} variant="outline" className="shrink-0">
-                                <Pencil className="mr-2 h-4 w-4" />
-                                {t("edit")}
-                            </Button>
+                            {!isRecycle && (
+                                <Button onClick={onEdit} variant="outline" className="shrink-0">
+                                    <Pencil className="mr-2 h-4 w-4" />
+                                    {t("edit")}
+                                </Button>
+                            )}
                         </div>
                     )}
                     {onToggleMaximize && (

@@ -31,9 +31,10 @@ interface NoteHistoryModalProps {
     vault: string;
     notePath: string;
     pathHash?: string;
+    isRecycle?: boolean;
 }
 
-export function NoteHistoryModal({ isOpen, onClose, vault, notePath, pathHash }: NoteHistoryModalProps) {
+export function NoteHistoryModal({ isOpen, onClose, vault, notePath, pathHash, isRecycle = false }: NoteHistoryModalProps) {
     const { t } = useTranslation();
     const { handleNoteHistoryList, handleNoteHistoryDetail } = useNoteHandle();
     const [historyList, setHistoryList] = useState<NoteHistory[]>([]);
@@ -49,7 +50,7 @@ export function NoteHistoryModal({ isOpen, onClose, vault, notePath, pathHash }:
 
     const fetchHistoryList = (currentPage: number) => {
         setLoading(true);
-        handleNoteHistoryList(vault, notePath, pathHash, currentPage, pageSize, (data) => {
+        handleNoteHistoryList(vault, notePath, pathHash, currentPage, pageSize, isRecycle, (data) => {
             if (data) {
                 setHistoryList(data.list || []);
                 if (data.pager) {

@@ -119,4 +119,6 @@ export default {
     maximize: "最大化",
     restore: "还原",
     planned: "待开发",
+    registerClosed: "用户注册已关闭",
+    sessionExpired: "用户登录状态失效",
 };

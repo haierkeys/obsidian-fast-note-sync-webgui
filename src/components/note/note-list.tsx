@@ -23,9 +23,10 @@ interface NoteListProps {
     pageSize: number;
     setPageSize: (pageSize: number) => void;
     onViewHistory: (note: Note) => void;
+    isRecycle?: boolean;
 }
 
-export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateNote, page, setPage, pageSize, setPageSize, onViewHistory }: NoteListProps) {
+export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateNote, page, setPage, pageSize, setPageSize, onViewHistory, isRecycle = false }: NoteListProps) {
     const { t } = useTranslation();
     const { handleNoteList, handleDeleteNote } = useNoteHandle();
     const { openConfirmDialog } = useConfirmDialog();
@@ -45,7 +46,7 @@ export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateN
 
     const fetchNotes = (currentPage: number = page, currentPageSize: number = pageSize, keyword: string = debouncedKeyword) => {
         setLoading(true);
-        handleNoteList(vault, currentPage, currentPageSize, keyword, (data) => {
+        handleNoteList(vault, currentPage, currentPageSize, keyword, isRecycle, (data) => {
             if (data) {
                 setNotes(data.list || []);
                 setTotalRows(data.pager?.totalRows || 0);
@@ -60,7 +61,7 @@ export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateN
     useEffect(() => {
         fetchNotes(page, pageSize, debouncedKeyword);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [vault, page, pageSize, debouncedKeyword]);
+    }, [vault, page, pageSize, debouncedKeyword, isRecycle]);
 
     // Reset page to 1 when search keyword changes
     useEffect(() => {
@@ -96,7 +97,7 @@ export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateN
                                 <div className="flex items-center gap-2">
                                     <span className="font-bold"><SelectValue placeholder="Select Vault" /></span>
                                     <span className="text-muted-foreground">/</span>
-                                    <span className="font-bold">{t("notes")}</span>
+                                    <span className="font-bold">{isRecycle ? t("menuTrash") + t("note") : t("notes")}</span>
                                 </div>
                             </SelectTrigger>
                             <SelectContent>
@@ -109,7 +110,7 @@ export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateN
                         </Select>
                     ) : (
                         <CardTitle className="text-xl font-bold">
-                            {t("notes")} ({totalRows})
+                            {isRecycle ? t("menuTrash") + t("note") : t("notes")} ({totalRows})
                         </CardTitle>
                     )}
                 </div>
@@ -137,10 +138,12 @@ export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateN
                     <Button variant="outline" size="icon" onClick={() => fetchNotes()} disabled={loading}>
                         <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
                     </Button>
-                    <Button onClick={onCreateNote}>
-                        <Plus className="h-4 w-4 sm:mr-2" />
-                        <span className="hidden sm:inline">{t("newNote")}</span>
-                    </Button>
+                    {!isRecycle && (
+                        <Button onClick={onCreateNote}>
+                            <Plus className="h-4 w-4 sm:mr-2" />
+                            <span className="hidden sm:inline">{t("newNote")}</span>
+                        </Button>
+                    )}
                 </div>
             </CardHeader>
             <CardContent className="p-0">
@@ -192,18 +195,20 @@ export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateN
                                             >
                                                 <Eye className="h-4 w-4" />
                                             </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="h-8 w-8 text-gray-500 hover:text-green-600 hover:bg-green-50 hidden sm:inline-flex"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    onSelectNote(note, "edit");
-                                                }}
-                                                title={t("edit")}
-                                            >
-                                                <Pencil className="h-4 w-4" />
-                                            </Button>
+                                            {!isRecycle && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 text-gray-500 hover:text-green-600 hover:bg-green-50 hidden sm:inline-flex"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        onSelectNote(note, "edit");
+                                                    }}
+                                                    title={t("edit")}
+                                                >
+                                                    <Pencil className="h-4 w-4" />
+                                                </Button>
+                                            )}
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
@@ -216,14 +221,16 @@ export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateN
                                             >
                                                 <History className="h-4 w-4" />
                                             </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="h-8 w-8 text-gray-500 hover:text-red-600 hover:bg-red-50"
-                                                onClick={(e) => onDelete(e, note)}
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
+                                            {!isRecycle && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 text-gray-500 hover:text-red-600 hover:bg-red-50"
+                                                    onClick={(e) => onDelete(e, note)}
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            )}
                                         </div>
                                     </div>
                                 ))}
