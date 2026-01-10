@@ -32,10 +32,11 @@ export default defineConfig({
       output: {
         // 代码分割策略 - 使用函数形式更灵活地处理依赖
         manualChunks(id) {
-          // React 核心库
+          // React 核心库 + 依赖 React context 的库
           if (id.includes('node_modules/react/') || 
               id.includes('node_modules/react-dom/') ||
-              id.includes('node_modules/scheduler/')) {
+              id.includes('node_modules/scheduler/') ||
+              id.includes('node_modules/react-i18next/')) {
             return 'vendor-react';
           }
           
@@ -93,9 +94,8 @@ export default defineConfig({
             return 'vendor-icons';
           }
 
-          // 国际化
-          if (id.includes('node_modules/i18next') ||
-              id.includes('node_modules/react-i18next/')) {
+          // 国际化 (i18next 核心，react-i18next 已合并到 vendor-react)
+          if (id.includes('node_modules/i18next')) {
             return 'vendor-i18n';
           }
 
