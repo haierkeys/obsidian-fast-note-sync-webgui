@@ -31,7 +31,8 @@ export function AppLayout({
   className,
 }: AppLayoutProps) {
   const { zenMode } = useAppStore()
-  const isMobile = useMobile()
+  // useMobile hook 保留用于未来移动端适配
+  useMobile()
 
   return (
     <div

@@ -100,7 +100,7 @@ async function pasteTextToElement(
   }
 
   // 使用 execCommand 插入文本（虽然已弃用但对富文本编辑器最可靠）
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
+   
   const success = document.execCommand("insertText", false, text);
   
   if (!success) {

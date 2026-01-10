@@ -44,10 +44,13 @@ export function NoteEditor({
     onBack,
     onSaveSuccess,
     onViewHistory,
-    isMaximized = false,
-    onToggleMaximize,
+    isMaximized: _isMaximized = false,
+    onToggleMaximize: _onToggleMaximize,
     isRecycle = false
 }: NoteEditorProps) {
+    // 保留 isMaximized 和 onToggleMaximize 用于未来最大化功能
+    void _isMaximized;
+    void _onToggleMaximize;
     const { t } = useTranslation();
     const { handleGetNote, handleSaveNote } = useNoteHandle();
     const editorRef = useRef<MarkdownEditorRef>(null);
