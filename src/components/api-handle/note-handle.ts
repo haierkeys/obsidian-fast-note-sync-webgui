@@ -173,6 +173,32 @@ export function useNoteHandle() {
         }
     }, [getHeaders])
 
+    const handleRestoreNote = useCallback(async (vault: string, path: string, pathHash: string | undefined, callback: () => void) => {
+        try {
+            const body = {
+                vault,
+                path,
+                pathHash,
+            }
+            const response = await fetch(addCacheBuster(`${env.API_URL}/api/note/restore`), {
+                method: "PUT",
+                body: JSON.stringify(body),
+                headers: getHeaders(),
+            })
+            if (!response.ok) {
+                throw new Error("Network response was not ok")
+            }
+            const res: NoteResponse<unknown> = await response.json()
+            if (res.code > 0 && res.code <= 200) {
+                toast.success(res.message)
+                callback()
+            } else {
+                toast.error(res.message + (res.details ? ": " + res.details.join(", ") : ""))
+            }
+        } catch (error: unknown) {
+            toast.error(error instanceof Error ? error.message : String(error))
+        }
+    }, [getHeaders])
 
     const handleNoteHistoryList = useCallback(async (vault: string, notePath: string, pathHash: string | undefined, page: number, pageSize: number, isRecycle: boolean = false, callback: (data: NoteHistoryListResponse) => void) => {
         try {
@@ -230,6 +256,7 @@ export function useNoteHandle() {
         handleGetNote,
         handleSaveNote,
         handleDeleteNote,
+        handleRestoreNote,
         handleNoteHistoryList,
         handleNoteHistoryDetail,
     }), [
@@ -237,6 +264,7 @@ export function useNoteHandle() {
         handleGetNote,
         handleSaveNote,
         handleDeleteNote,
+        handleRestoreNote,
         handleNoteHistoryList,
         handleNoteHistoryDetail,
     ])

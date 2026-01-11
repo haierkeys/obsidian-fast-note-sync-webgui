@@ -1,9 +1,10 @@
-import { FileText, Trash2, RefreshCw, Plus, Calendar, Clock, ChevronLeft, ChevronRight, History, Search, X, Regex, FileSearch, ArrowUpDown } from "lucide-react";
+import { FileText, Trash2, RefreshCw, Plus, Calendar, Clock, ChevronLeft, ChevronRight, History, Search, X, Regex, FileSearch, ArrowUpDown, RotateCcw } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useConfirmDialog } from "@/components/context/confirm-dialog-context";
 import { useNoteHandle } from "@/components/api-handle/note-handle";
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { Tooltip } from "@/components/ui/tooltip";
 import { useTranslation } from "react-i18next";
 import { VaultType } from "@/lib/types/vault";
 import { Input } from "@/components/ui/input";
@@ -32,7 +33,7 @@ interface NoteListProps {
 
 export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateNote, page, setPage, pageSize, setPageSize, onViewHistory, isRecycle = false, searchKeyword, setSearchKeyword }: NoteListProps) {
     const { t } = useTranslation();
-    const { handleNoteList, handleDeleteNote } = useNoteHandle();
+    const { handleNoteList, handleDeleteNote, handleRestoreNote } = useNoteHandle();
     const { openConfirmDialog } = useConfirmDialog();
     const [notes, setNotes] = useState<Note[]>([]);
     const [loading, setLoading] = useState(false);
@@ -110,6 +111,16 @@ export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateN
         const title = note.path.replace(/\.md$/, "");
         openConfirmDialog(t("deleteNoteConfirm", { title }), "confirm", () => {
             handleDeleteNote(vault, note.path, note.pathHash, () => {
+                fetchNotes();
+            });
+        });
+    };
+
+    const onRestore = (e: React.MouseEvent, note: Note) => {
+        e.stopPropagation();
+        const title = note.path.replace(/\.md$/, "");
+        openConfirmDialog(t("restoreNoteConfirm", { title }), "confirm", () => {
+            handleRestoreNote(vault, note.path, note.pathHash, () => {
                 fetchNotes();
             });
         });
@@ -228,13 +239,14 @@ export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateN
                                 <FileText className="h-3.5 w-3.5" />
                                 {t("sortByPath")}
                             </button>
-                            <button
-                                className={`px-2.5 h-full text-xs flex items-center transition-colors border-l border-border hover:bg-muted`}
-                                onClick={() => setSortOrder(sortOrder === "desc" ? "asc" : "desc")}
-                                title={sortOrder === "desc" ? t("sortDesc") : t("sortAsc")}
-                            >
-                                <ArrowUpDown className={`h-3.5 w-3.5 transition-transform ${sortOrder === "asc" ? "rotate-180" : ""}`} />
-                            </button>
+                            <Tooltip content={sortOrder === "desc" ? t("sortDesc") : t("sortAsc")} side="top" delay={200}>
+                                <button
+                                    className={`px-2.5 h-full text-xs flex items-center transition-colors border-l border-border hover:bg-muted`}
+                                    onClick={() => setSortOrder(sortOrder === "desc" ? "asc" : "desc")}
+                                >
+                                    <ArrowUpDown className={`h-3.5 w-3.5 transition-transform ${sortOrder === "asc" ? "rotate-180" : ""}`} />
+                                </button>
+                            </Tooltip>
                         </div>
                         {regexError && (
                             <span className="text-xs text-destructive">{regexError}</span>
@@ -262,7 +274,7 @@ export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateN
                             className="rounded-3xl border border-border bg-card p-4 cursor-pointer transition-all duration-200 hover:shadow-md hover:border-primary/30"
                             onClick={() => onSelectNote(note)}
                         >
-                                <div className="flex items-start justify-between gap-4">
+                                <div className="flex items-center justify-between gap-4">
                                     {/* 左侧：图标和内容 */}
                                     <div className="flex items-start gap-3 min-w-0 flex-1">
                                         <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0">
@@ -273,19 +285,25 @@ export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateN
                                                 {note.path.replace(/\.md$/, "")}
                                             </h3>
                                             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1.5 text-xs text-muted-foreground">
-                                                <span className="hidden sm:flex items-center gap-1" title={t("createdAt")}>
-                                                    <Calendar className="h-3.5 w-3.5" />
-                                                    {format(new Date(note.ctime), "yyyy-MM-dd HH:mm")}
-                                                </span>
-                                                <span className="flex items-center gap-1" title={t("updatedAt")}>
-                                                    <Clock className="h-3.5 w-3.5" />
-                                                    {format(new Date(note.mtime), "yyyy-MM-dd HH:mm")}
-                                                </span>
-                                                {note.version > 0 && (
-                                                    <span className="flex items-center gap-1" title={t("history")}>
-                                                        <History className="h-3.5 w-3.5" />
-                                                        v{note.version}
+                                                <Tooltip content={t("createdAt")} side="top" delay={300}>
+                                                    <span className="hidden sm:flex items-center gap-1">
+                                                        <Calendar className="h-3.5 w-3.5" />
+                                                        {format(new Date(note.ctime), "yyyy-MM-dd HH:mm")}
                                                     </span>
+                                                </Tooltip>
+                                                <Tooltip content={t("updatedAt")} side="top" delay={300}>
+                                                    <span className="flex items-center gap-1">
+                                                        <Clock className="h-3.5 w-3.5" />
+                                                        {format(new Date(note.mtime), "yyyy-MM-dd HH:mm")}
+                                                    </span>
+                                                </Tooltip>
+                                                {note.version > 0 && (
+                                                    <Tooltip content={t("history")} side="top" delay={300}>
+                                                        <span className="flex items-center gap-1">
+                                                            <History className="h-3.5 w-3.5" />
+                                                            v{note.version}
+                                                        </span>
+                                                    </Tooltip>
                                                 )}
                                             </div>
                                         </div>
@@ -293,28 +311,42 @@ export function NoteList({ vault, vaults, onVaultChange, onSelectNote, onCreateN
 
                                     {/* 右侧：操作按钮 */}
                                     <div className="flex items-center gap-1 shrink-0">
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="h-8 w-8 rounded-xl text-muted-foreground hover:text-purple-600"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                onViewHistory(note);
-                                            }}
-                                            title={t("history") || "历史记录"}
-                                        >
-                                            <History className="h-4 w-4" />
-                                        </Button>
-                                        {!isRecycle && (
+                                        <Tooltip content={t("history") || "历史记录"} side="top" delay={200}>
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
-                                                className="h-8 w-8 rounded-xl text-muted-foreground hover:text-destructive"
-                                                onClick={(e) => onDelete(e, note)}
-                                                title={t("delete")}
+                                                className="h-8 w-8 rounded-xl text-muted-foreground hover:text-purple-600"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    onViewHistory(note);
+                                                }}
                                             >
-                                                <Trash2 className="h-4 w-4" />
+                                                <History className="h-4 w-4" />
                                             </Button>
+                                        </Tooltip>
+                                        {!isRecycle && (
+                                            <Tooltip content={t("delete")} side="top" delay={200}>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 rounded-xl text-muted-foreground hover:text-destructive"
+                                                    onClick={(e) => onDelete(e, note)}
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            </Tooltip>
+                                        )}
+                                        {isRecycle && (
+                                            <Tooltip content={t("restore")} side="top" delay={200}>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 rounded-xl text-muted-foreground hover:text-green-600"
+                                                    onClick={(e) => onRestore(e, note)}
+                                                >
+                                                    <RotateCcw className="h-4 w-4" />
+                                                </Button>
+                                            </Tooltip>
                                         )}
                                     </div>
                                 </div>

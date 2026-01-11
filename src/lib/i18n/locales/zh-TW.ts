@@ -35,6 +35,7 @@ export default {
     add: "新增",
     confirmDelete: "確定要刪除這個倉庫嗎？",
     deleteNoteConfirm: "確定要刪除筆記 \"{{title}}\" 嗎？",
+    restoreNoteConfirm: "確定要恢復筆記 \"{{title}}\" 嗎？",
     vaultManagement: "筆記倉庫",
     addVault: "新建倉庫",
     vaultName: "倉庫名稱",
@@ -180,4 +181,15 @@ export default {
     fillAllFields: "請填寫所有字段",
     invalidNumber: "請輸入有效數字",
     autoSaving: "保存中...",
+    // 右鍵菜單
+    contextMenu: "上下文菜單",
+    undo: "復原",
+    redo: "重做",
+    cut: "剪下",
+    copy: "複製",
+    paste: "貼上",
+    selectAll: "全選",
+    // 全屏
+    fullscreen: "全屏",
+    exitFullscreen: "退出全屏",
 };

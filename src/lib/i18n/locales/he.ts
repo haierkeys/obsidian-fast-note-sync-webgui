@@ -172,4 +172,15 @@ export default {
     fillAllFields: "נא למלא את כל השדות",
     invalidNumber: "נא להזין מספר חוקי",
     autoSaving: "שומר...",
+    // תפריט הקשר
+    contextMenu: "תפריט הקשר",
+    undo: "בטל",
+    redo: "חזור",
+    cut: "גזור",
+    copy: "העתק",
+    paste: "הדבק",
+    selectAll: "בחר הכל",
+    // מסך מלא
+    fullscreen: "מסך מלא",
+    exitFullscreen: "יציאה ממסך מלא",
 };

@@ -172,4 +172,15 @@ export default {
     fillAllFields: "Vă rugăm să completați toate câmpurile",
     invalidNumber: "Vă rugăm să introduceți un număr valid",
     autoSaving: "Se salvează...",
+    // Meniu contextual
+    contextMenu: "Meniu contextual",
+    undo: "Anulare",
+    redo: "Refacere",
+    cut: "Tăiere",
+    copy: "Copiere",
+    paste: "Lipire",
+    selectAll: "Selectare tot",
+    // Ecran complet
+    fullscreen: "Ecran complet",
+    exitFullscreen: "Ieșire din ecran complet",
 };

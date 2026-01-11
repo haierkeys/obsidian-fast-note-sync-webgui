@@ -180,4 +180,15 @@ export default {
     fillAllFields: "すべてのフィールドを入力してください",
     invalidNumber: "有効な数字を入力してください",
     autoSaving: "保存中...",
+    // コンテキストメニュー
+    contextMenu: "コンテキストメニュー",
+    undo: "元に戻す",
+    redo: "やり直す",
+    cut: "切り取り",
+    copy: "コピー",
+    paste: "貼り付け",
+    selectAll: "すべて選択",
+    // 全画面
+    fullscreen: "全画面",
+    exitFullscreen: "全画面を終了",
 };

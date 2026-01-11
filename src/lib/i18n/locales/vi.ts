@@ -172,4 +172,15 @@ export default {
     fillAllFields: "Vui lòng điền tất cả các trường",
     invalidNumber: "Vui lòng nhập số hợp lệ",
     autoSaving: "Đang lưu...",
+    // Menu ngữ cảnh
+    contextMenu: "Menu ngữ cảnh",
+    undo: "Hoàn tác",
+    redo: "Làm lại",
+    cut: "Cắt",
+    copy: "Sao chép",
+    paste: "Dán",
+    selectAll: "Chọn tất cả",
+    // Toàn màn hình
+    fullscreen: "Toàn màn hình",
+    exitFullscreen: "Thoát toàn màn hình",
 };

@@ -172,4 +172,15 @@ export default {
     fillAllFields: "Proszę wypełnić wszystkie pola",
     invalidNumber: "Proszę wprowadzić prawidłową liczbę",
     autoSaving: "Zapisywanie...",
+    // Menu kontekstowe
+    contextMenu: "Menu kontekstowe",
+    undo: "Cofnij",
+    redo: "Ponów",
+    cut: "Wytnij",
+    copy: "Kopiuj",
+    paste: "Wklej",
+    selectAll: "Zaznacz wszystko",
+    // Pełny ekran
+    fullscreen: "Pełny ekran",
+    exitFullscreen: "Wyjdź z pełnego ekranu",
 };

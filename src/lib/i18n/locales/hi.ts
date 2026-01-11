@@ -172,4 +172,15 @@ export default {
     fillAllFields: "कृपया सभी फ़ील्ड भरें",
     invalidNumber: "कृपया एक मान्य संख्या दर्ज करें",
     autoSaving: "सहेज रहा है...",
+    // संदर्भ मेनू
+    contextMenu: "संदर्भ मेनू",
+    undo: "पूर्ववत करें",
+    redo: "दोहराएँ",
+    cut: "काटें",
+    copy: "कॉपी करें",
+    paste: "चिपकाएँ",
+    selectAll: "सभी का चयन करें",
+    // पूर्ण स्क्रीन
+    fullscreen: "पूर्ण स्क्रीन",
+    exitFullscreen: "पूर्ण स्क्रीन से बाहर निकलें",
 };

@@ -172,4 +172,15 @@ export default {
     fillAllFields: "Kérjük, töltse ki az összes mezőt",
     invalidNumber: "Kérjük, adjon meg egy érvényes számot",
     autoSaving: "Mentés...",
+    // Helyi menü
+    contextMenu: "Helyi menü",
+    undo: "Visszavonás",
+    redo: "Ismétlés",
+    cut: "Kivágás",
+    copy: "Másolás",
+    paste: "Beillesztés",
+    selectAll: "Összes kijelölése",
+    // Teljes képernyő
+    fullscreen: "Teljes képernyő",
+    exitFullscreen: "Teljes képernyőből kilépés",
 };

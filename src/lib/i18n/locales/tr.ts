@@ -172,4 +172,15 @@ export default {
     fillAllFields: "Lütfen tüm alanları doldurun",
     invalidNumber: "Lütfen geçerli bir sayı girin",
     autoSaving: "Kaydediliyor...",
+    // Bağlam menüsü
+    contextMenu: "Bağlam menüsü",
+    undo: "Geri al",
+    redo: "İleri al",
+    cut: "Kes",
+    copy: "Kopyala",
+    paste: "Yapıştır",
+    selectAll: "Tümünü seç",
+    // Tam ekran
+    fullscreen: "Tam ekran",
+    exitFullscreen: "Tam ekrandan çık",
 };

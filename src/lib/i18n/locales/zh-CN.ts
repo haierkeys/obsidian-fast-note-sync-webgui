@@ -35,6 +35,7 @@ export default {
     add: "新增",
     confirmDelete: "确定要删除这个仓库吗？",
     deleteNoteConfirm: "确定要删除笔记 \"{{title}}\" 吗？",
+    restoreNoteConfirm: "确定要恢复笔记 \"{{title}}\" 吗？",
     vaultManagement: "笔记仓库",
     addVault: "新建仓库",
     vaultName: "仓库名称",
@@ -225,4 +226,15 @@ export default {
     "colorScheme.orange": "橙色",
     "colorScheme.rose": "玫瑰",
     "colorScheme.teal": "青色",
+    // 右键菜单
+    contextMenu: "上下文菜单",
+    undo: "撤销",
+    redo: "重做",
+    cut: "剪切",
+    copy: "复制",
+    paste: "粘贴",
+    selectAll: "全选",
+    // 全屏
+    fullscreen: "全屏",
+    exitFullscreen: "退出全屏",
 };

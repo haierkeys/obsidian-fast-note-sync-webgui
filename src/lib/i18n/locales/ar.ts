@@ -172,4 +172,15 @@ export default {
     fillAllFields: "يرجى ملء جميع الحقول",
     invalidNumber: "يرجى إدخال رقم صحيح",
     autoSaving: "جاري الحفظ...",
+    // قائمة السياق
+    contextMenu: "قائمة السياق",
+    undo: "تراجع",
+    redo: "إعادة",
+    cut: "قص",
+    copy: "نسخ",
+    paste: "لصق",
+    selectAll: "تحديد الكل",
+    // ملء الشاشة
+    fullscreen: "ملء الشاشة",
+    exitFullscreen: "خروج من ملء الشاشة",
 };

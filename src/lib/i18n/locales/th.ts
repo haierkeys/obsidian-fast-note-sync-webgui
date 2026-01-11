@@ -172,4 +172,15 @@ export default {
     fillAllFields: "กรุณากรอกข้อมูลทุกช่อง",
     invalidNumber: "กรุณากรอกตัวเลขที่ถูกต้อง",
     autoSaving: "กำลังบันทึก...",
+    // เมนูบริบท
+    contextMenu: "เมนูบริบท",
+    undo: "เลิกทำ",
+    redo: "ทำซ้ำ",
+    cut: "ตัด",
+    copy: "คัดลอก",
+    paste: "วาง",
+    selectAll: "เลือกทั้งหมด",
+    // เต็มหน้าจอ
+    fullscreen: "เต็มหน้าจอ",
+    exitFullscreen: "ออกจากเต็มหน้าจอ",
 };

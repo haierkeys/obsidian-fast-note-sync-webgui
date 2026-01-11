@@ -180,4 +180,15 @@ export default {
     fillAllFields: "모든 필드를 입력하세요",
     invalidNumber: "유효한 숫자를 입력하세요",
     autoSaving: "저장 중...",
+    //우클릭 메뉴
+    contextMenu: "우클릭 메뉴",
+    undo: "실행 취소",
+    redo: "다시 실행",
+    cut: "잘라내기",
+    copy: "복사",
+    paste: "붙여넣기",
+    selectAll: "모두 선택",
+    // 전체 화면
+    fullscreen: "전체 화면",
+    exitFullscreen: "전체 화면 종료",
 };

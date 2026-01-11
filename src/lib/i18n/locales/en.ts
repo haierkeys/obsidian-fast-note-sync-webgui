@@ -35,6 +35,7 @@ export default {
     add: "Add",
     confirmDelete: "Are you sure you want to delete this vault?",
     deleteNoteConfirm: "Are you sure you want to delete note \"{{title}}\"?",
+    restoreNoteConfirm: "Are you sure you want to restore note \"{{title}}\"?",
     vaultManagement: "Vaults",
     addVault: "New Vault",
     vaultName: "Vault Name",
@@ -225,4 +226,15 @@ export default {
     "colorScheme.orange": "Orange",
     "colorScheme.rose": "Rose",
     "colorScheme.teal": "Teal",
+    // Context menu
+    contextMenu: "Context Menu",
+    undo: "Undo",
+    redo: "Redo",
+    cut: "Cut",
+    copy: "Copy",
+    paste: "Paste",
+    selectAll: "Select All",
+    // Fullscreen
+    fullscreen: "Fullscreen",
+    exitFullscreen: "Exit Fullscreen",
 };

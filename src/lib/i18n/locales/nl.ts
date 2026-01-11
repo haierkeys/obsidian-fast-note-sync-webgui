@@ -172,4 +172,15 @@ export default {
     fillAllFields: "Vul alle velden in",
     invalidNumber: "Voer een geldig nummer in",
     autoSaving: "Opslaan...",
+    // Contextmenu
+    contextMenu: "Contextmenu",
+    undo: "Ongedaan maken",
+    redo: "Opnieuw",
+    cut: "Knippen",
+    copy: "Kopiëren",
+    paste: "Plakken",
+    selectAll: "Alles selecteren",
+    // Vollscherm
+    fullscreen: "Vollscherm",
+    exitFullscreen: "Vollscherm afsluiten",
 };

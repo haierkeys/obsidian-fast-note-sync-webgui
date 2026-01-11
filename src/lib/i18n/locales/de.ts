@@ -172,4 +172,15 @@ export default {
     fillAllFields: "Bitte alle Felder ausfüllen",
     invalidNumber: "Bitte eine gültige Zahl eingeben",
     autoSaving: "Wird gespeichert...",
+    // Kontextmenü
+    contextMenu: "Kontextmenü",
+    undo: "Rückgängig",
+    redo: "Wiederherstellen",
+    cut: "Ausschneiden",
+    copy: "Kopieren",
+    paste: "Einfügen",
+    selectAll: "Alles auswählen",
+    // Vollbild
+    fullscreen: "Vollbild",
+    exitFullscreen: "Vollbild beenden",
 };

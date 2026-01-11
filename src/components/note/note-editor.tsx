@@ -4,6 +4,7 @@ import { useNoteHandle } from "@/components/api-handle/note-handle";
 import { toast } from "@/components/common/Toast";
 import { Note, NoteDetail } from "@/lib/types/note";
 import { Button } from "@/components/ui/button";
+import { Tooltip } from "@/components/ui/tooltip";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { hashCode } from "@/lib/utils/hash";
@@ -364,7 +365,6 @@ export function NoteEditor({
                 <div 
                     className={`flex items-center gap-1 min-w-0 text-sm sm:text-lg ${!isRecycle ? "cursor-pointer hover:bg-muted/50 rounded px-1 py-0.5 -mx-1 -my-0.5 transition-colors" : ""}`}
                     onClick={startEditingTitle}
-                    title={!isRecycle ? (t("clickToEditTitle") || "点击编辑标题") : undefined}
                 >
                     {folder && (
                         <div className="hidden sm:flex items-center gap-2 shrink-0">
@@ -419,36 +419,39 @@ export function NoteEditor({
 
                 <div className="flex items-center gap-0.5 sm:gap-2 shrink-0">
                     {note && (
+                        <Tooltip content={t("refresh")} side="bottom" delay={200}>
+                            <Button 
+                                onClick={loadNote} 
+                                variant="outline" 
+                                size="icon"
+                                className="rounded-lg sm:rounded-xl h-7 w-7 sm:h-10 sm:w-10"
+                            >
+                                <RefreshCcw className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${loading ? "animate-spin" : ""}`} />
+                            </Button>
+                        </Tooltip>
+                    )}
+                    {note && onViewHistory && (
+                        <Tooltip content={t("history") || "历史"} side="bottom" delay={200}>
+                            <Button 
+                                onClick={onViewHistory} 
+                                variant="outline"
+                                size="icon"
+                                className="rounded-lg sm:rounded-xl h-7 w-7 sm:h-10 sm:w-10"
+                            >
+                                <History className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                            </Button>
+                        </Tooltip>
+                    )}
+                    <Tooltip content={isFullscreen ? (t("exitFullscreen") || "退出全屏") : (t("fullscreen") || "全屏")} side="bottom" delay={200}>
                         <Button 
-                            onClick={loadNote} 
+                            onClick={toggleFullscreen} 
                             variant="outline" 
                             size="icon"
                             className="rounded-lg sm:rounded-xl h-7 w-7 sm:h-10 sm:w-10"
-                            title={t("refresh")}
                         >
-                            <RefreshCcw className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${loading ? "animate-spin" : ""}`} />
+                            {isFullscreen ? <Shrink className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : <Fullscreen className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
                         </Button>
-                    )}
-                    {note && onViewHistory && (
-                        <Button 
-                            onClick={onViewHistory} 
-                            variant="outline"
-                            size="icon"
-                            className="rounded-lg sm:rounded-xl h-7 w-7 sm:h-10 sm:w-10"
-                            title={t("history") || "历史"}
-                        >
-                            <History className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                        </Button>
-                    )}
-                    <Button 
-                        onClick={toggleFullscreen} 
-                        variant="outline" 
-                        size="icon"
-                        className="rounded-lg sm:rounded-xl h-7 w-7 sm:h-10 sm:w-10"
-                        title={isFullscreen ? (t("exitFullscreen") || "退出全屏") : (t("fullscreen") || "全屏")}
-                    >
-                        {isFullscreen ? <Shrink className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : <Fullscreen className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
-                    </Button>
+                    </Tooltip>
                 </div>
             </div>
 

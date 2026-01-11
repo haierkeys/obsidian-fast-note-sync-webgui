@@ -7,6 +7,7 @@ import { useVaultHandle } from "@/components/api-handle/vault-handle";
 import { toast } from "@/components/common/Toast";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
+import { Tooltip } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
 import { VaultType } from "@/lib/types/vault";
@@ -122,16 +123,20 @@ function SortableVaultCard({
         <span>{t("totalSize", { size: formatBytes(vault.size) })}</span>
         <div className="flex items-center gap-3">
           {vault.createdAt && (
-            <span className="flex items-center gap-1" title={t("createdAt") || "创建时间"}>
-              <Clock className="h-3 w-3" />
-              {vault.createdAt}
-            </span>
+            <Tooltip content={t("createdAt") || "创建时间"} side="top" delay={300}>
+              <span className="flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                {vault.createdAt}
+              </span>
+            </Tooltip>
           )}
           {vault.updatedAt && (
-            <span className="flex items-center gap-1" title={t("updatedAt") || "更新时间"}>
-              <RefreshCw className="h-3 w-3" />
-              {vault.updatedAt}
-            </span>
+            <Tooltip content={t("updatedAt") || "更新时间"} side="top" delay={300}>
+              <span className="flex items-center gap-1">
+                <RefreshCw className="h-3 w-3" />
+                {vault.updatedAt}
+              </span>
+            </Tooltip>
           )}
         </div>
       </div>
@@ -140,72 +145,78 @@ function SortableVaultCard({
       <div className="flex items-center justify-end gap-1 pt-2 border-t border-border">
         {editingId === vault.id ? (
           <>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 rounded-xl text-green-600 hover:text-green-700 hover:bg-green-50"
-              onClick={(e) => {
-                e.stopPropagation()
-                saveEdit(vault)
-              }}
-              title={t("save") || "保存"}
-            >
-              <Check className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 rounded-xl text-muted-foreground hover:text-foreground"
-              onClick={(e) => {
-                e.stopPropagation()
-                cancelEdit()
-              }}
-              title={t("cancel") || "取消"}
-            >
-              <X className="h-4 w-4" />
-            </Button>
+            <Tooltip content={t("save") || "保存"} side="top" delay={200}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 rounded-xl text-green-600 hover:text-green-700 hover:bg-green-50"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  saveEdit(vault)
+                }}
+              >
+                <Check className="h-4 w-4" />
+              </Button>
+            </Tooltip>
+            <Tooltip content={t("cancel") || "取消"} side="top" delay={200}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 rounded-xl text-muted-foreground hover:text-foreground"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  cancelEdit()
+                }}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </Tooltip>
           </>
         ) : (
           <>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-8 w-8 rounded-xl text-muted-foreground hover:text-purple-600" 
-              onClick={(e) => onViewConfig(vault.vault, e)} 
-              title={t("viewConfig") || "查看配置"}
-            >
-              <Settings className="h-4 w-4" />
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-8 w-8 rounded-xl text-muted-foreground hover:text-blue-600" 
-              onClick={(e) => onQuickCopy(vault.vault, e)} 
-              title={t("copyConfig") || "快速复制"}
-            >
-              <Clipboard className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 rounded-xl text-muted-foreground hover:text-green-600"
-              onClick={(e) => startEdit(vault, e)}
-              title={t("editVault")}
-            >
-              <Pencil className="h-4 w-4" />
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-8 w-8 rounded-xl text-muted-foreground hover:text-destructive" 
-              onClick={(e) => {
-                e.stopPropagation()
-                handleDelete(vault.id)
-              }}
-              title={t("deleteVault")}
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
+            <Tooltip content={t("viewConfig") || "查看配置"} side="top" delay={200}>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8 rounded-xl text-muted-foreground hover:text-purple-600" 
+                onClick={(e) => onViewConfig(vault.vault, e)}
+              >
+                <Settings className="h-4 w-4" />
+              </Button>
+            </Tooltip>
+            <Tooltip content={t("copyConfig") || "快速复制"} side="top" delay={200}>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8 rounded-xl text-muted-foreground hover:text-blue-600" 
+                onClick={(e) => onQuickCopy(vault.vault, e)}
+              >
+                <Clipboard className="h-4 w-4" />
+              </Button>
+            </Tooltip>
+            <Tooltip content={t("editVault")} side="top" delay={200}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 rounded-xl text-muted-foreground hover:text-green-600"
+                onClick={(e) => startEdit(vault, e)}
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+            </Tooltip>
+            <Tooltip content={t("deleteVault")} side="top" delay={200}>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8 rounded-xl text-muted-foreground hover:text-destructive" 
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleDelete(vault.id)
+                }}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </Tooltip>
           </>
         )}
       </div>
@@ -448,16 +459,17 @@ export function VaultList({ onNavigateToNotes }: VaultListProps) {
               </button>
             )}
           </div>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => loadVaults(true)}
-            title={t("refresh")}
-            className="h-9 w-9 rounded-xl shrink-0"
-            disabled={isRefreshing}
-          >
-            <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
-          </Button>
+          <Tooltip content={t("refresh")} side="bottom" delay={200}>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => loadVaults(true)}
+              className="h-9 w-9 rounded-xl shrink-0"
+              disabled={isRefreshing}
+            >
+              <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
+            </Button>
+          </Tooltip>
           <Button
             onClick={() => setIsAdding(true)}
             className="rounded-xl shrink-0"

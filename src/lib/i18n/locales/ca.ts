@@ -172,4 +172,15 @@ export default {
     fillAllFields: "Si us plau, ompliu tots els camps",
     invalidNumber: "Si us plau, introduïu un número vàlid",
     autoSaving: "Desant...",
+    // Menú contextual
+    contextMenu: "Menú contextual",
+    undo: "Desfer",
+    redo: "Refer",
+    cut: "Tallar",
+    copy: "Copiar",
+    paste: "Enganxar",
+    selectAll: "Seleccionar tot",
+    // Pantalla completa
+    fullscreen: "Pantalla completa",
+    exitFullscreen: "Sortir de pantalla completa",
 };

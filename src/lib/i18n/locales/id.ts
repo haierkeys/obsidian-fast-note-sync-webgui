@@ -172,4 +172,15 @@ export default {
     fillAllFields: "Silakan isi semua kolom",
     invalidNumber: "Silakan masukkan angka yang valid",
     autoSaving: "Menyimpan...",
+    // Menu konteks
+    contextMenu: "Menu konteks",
+    undo: "Batalkan",
+    redo: "Ulangi",
+    cut: "Potong",
+    copy: "Salin",
+    paste: "Tempel",
+    selectAll: "Pilih semua",
+    // Layar penuh
+    fullscreen: "Layar penuh",
+    exitFullscreen: "Keluar dari layar penuh",
 };
