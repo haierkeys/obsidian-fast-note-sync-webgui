@@ -88,22 +88,6 @@ function SortableVaultCard({
                 if (e.key === "Escape") cancelEdit()
               }}
             />
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 rounded-xl text-green-600 hover:text-green-700 hover:bg-green-50"
-              onClick={() => saveEdit(vault)}
-            >
-              <Check className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 rounded-xl text-muted-foreground hover:text-foreground"
-              onClick={cancelEdit}
-            >
-              <X className="h-4 w-4" />
-            </Button>
           </div>
         ) : (
           <>
@@ -153,49 +137,78 @@ function SortableVaultCard({
       </div>
 
       {/* 操作按钮 */}
-      {editingId !== vault.id && (
-        <div className="flex items-center justify-end gap-1 pt-2 border-t border-border">
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="h-8 w-8 rounded-xl text-muted-foreground hover:text-purple-600" 
-            onClick={(e) => onViewConfig(vault.vault, e)} 
-            title={t("viewConfig") || "查看配置"}
-          >
-            <Settings className="h-4 w-4" />
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="h-8 w-8 rounded-xl text-muted-foreground hover:text-blue-600" 
-            onClick={(e) => onQuickCopy(vault.vault, e)} 
-            title={t("copyConfig") || "快速复制"}
-          >
-            <Clipboard className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 rounded-xl text-muted-foreground hover:text-green-600"
-            onClick={(e) => startEdit(vault, e)}
-            title={t("editVault")}
-          >
-            <Pencil className="h-4 w-4" />
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="h-8 w-8 rounded-xl text-muted-foreground hover:text-destructive" 
-            onClick={(e) => {
-              e.stopPropagation()
-              handleDelete(vault.id)
-            }}
-            title={t("deleteVault")}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
-      )}
+      <div className="flex items-center justify-end gap-1 pt-2 border-t border-border">
+        {editingId === vault.id ? (
+          <>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 rounded-xl text-green-600 hover:text-green-700 hover:bg-green-50"
+              onClick={(e) => {
+                e.stopPropagation()
+                saveEdit(vault)
+              }}
+              title={t("save") || "保存"}
+            >
+              <Check className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 rounded-xl text-muted-foreground hover:text-foreground"
+              onClick={(e) => {
+                e.stopPropagation()
+                cancelEdit()
+              }}
+              title={t("cancel") || "取消"}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8 rounded-xl text-muted-foreground hover:text-purple-600" 
+              onClick={(e) => onViewConfig(vault.vault, e)} 
+              title={t("viewConfig") || "查看配置"}
+            >
+              <Settings className="h-4 w-4" />
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8 rounded-xl text-muted-foreground hover:text-blue-600" 
+              onClick={(e) => onQuickCopy(vault.vault, e)} 
+              title={t("copyConfig") || "快速复制"}
+            >
+              <Clipboard className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 rounded-xl text-muted-foreground hover:text-green-600"
+              onClick={(e) => startEdit(vault, e)}
+              title={t("editVault")}
+            >
+              <Pencil className="h-4 w-4" />
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8 rounded-xl text-muted-foreground hover:text-destructive" 
+              onClick={(e) => {
+                e.stopPropagation()
+                handleDelete(vault.id)
+              }}
+              title={t("deleteVault")}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </>
+        )}
+      </div>
     </article>
   );
 }
@@ -404,13 +417,13 @@ export function VaultList({ onNavigateToNotes }: VaultListProps) {
   return (
     <div className="w-full space-y-4">
       {/* 操作栏 */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-1">
         {/* 左侧：数量显示 */}
         <div className="flex items-center gap-3">
           <span className="text-sm text-muted-foreground">
-            {filteredVaults.length} {t("vault") || "仓库"}
+            {t("vaultCount", { count: filteredVaults.length })}
             {searchKeyword && vaults.length !== filteredVaults.length && (
-              <span className="ml-1">/ {vaults.length} {t("total") || "总计"}</span>
+              <span className="ml-1">/ {t("vaultCount", { count: vaults.length })}</span>
             )}
           </span>
         </div>
@@ -515,7 +528,7 @@ export function VaultList({ onNavigateToNotes }: VaultListProps) {
             items={filteredVaults.map((v) => v.id)}
             strategy={rectSortingStrategy}
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-1">
               {filteredVaults.map((vault) => (
                 <SortableVaultCard
                   key={vault.id}

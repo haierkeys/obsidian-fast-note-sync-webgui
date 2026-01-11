@@ -275,106 +275,6 @@ export function SystemSettings({ onBack }: { onBack?: () => void }) {
                     <span className="text-sm text-muted-foreground">{t("autoSaving") || "保存中..."}</span>
                 </div>
             )}
-            {/* 账户设置 */}
-            <div>
-                <div className="rounded-3xl border border-border bg-card p-6 space-y-5">
-                    <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-                        <User className="h-5 w-5" />
-                        {t("accountSettings") || "账户设置"}
-                    </h2>
-                    
-                    {/* 修改用户名 */}
-                    <div className="space-y-3">
-                        <div className="flex items-center gap-3">
-                            <Pencil className="h-5 w-5 text-muted-foreground" />
-                            <span className="text-sm font-medium">{t("changeUsername") || "修改用户名"}</span>
-                        </div>
-                        <div className="flex gap-2">
-                            <Input
-                                value={newUsername}
-                                onChange={(e) => setNewUsername(e.target.value)}
-                                placeholder={t("enterNewUsername") || "请输入新用户名"}
-                                className="rounded-xl flex-1"
-                            />
-                            <Button 
-                                onClick={handleChangeUsername} 
-                                disabled={savingUsername || !newUsername.trim()}
-                                className="rounded-xl"
-                            >
-                                {savingUsername ? t("submitting") : t("save")}
-                            </Button>
-                        </div>
-                    </div>
-
-                    <div className="border-t border-border" />
-
-                    {/* 修改密码 */}
-                    <div className="space-y-3">
-                        <div className="flex items-center gap-3">
-                            <Lock className="h-5 w-5 text-muted-foreground" />
-                            <span className="text-sm font-medium">{t("changePassword") || "修改密码"}</span>
-                        </div>
-                        <div className="space-y-3">
-                            <div className="relative">
-                                <Input
-                                    type={showOldPassword ? "text" : "password"}
-                                    value={oldPassword}
-                                    onChange={(e) => setOldPassword(e.target.value)}
-                                    placeholder={t("currentPassword") || "请输入当前密码"}
-                                    className="rounded-xl pr-10"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowOldPassword(!showOldPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                                >
-                                    {showOldPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                </button>
-                            </div>
-                            <div className="relative">
-                                <Input
-                                    type={showNewPassword ? "text" : "password"}
-                                    value={newPassword}
-                                    onChange={(e) => setNewPassword(e.target.value)}
-                                    placeholder={t("newPassword") || "请输入新密码"}
-                                    className="rounded-xl pr-10"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowNewPassword(!showNewPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                                >
-                                    {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                </button>
-                            </div>
-                            <div className="relative">
-                                <Input
-                                    type={showConfirmPassword ? "text" : "password"}
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    placeholder={t("confirmNewPassword") || "请确认新密码"}
-                                    className="rounded-xl pr-10"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                                >
-                                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                </button>
-                            </div>
-                            <Button 
-                                onClick={handleChangePassword} 
-                                disabled={savingPassword || !oldPassword || !newPassword || !confirmPassword}
-                                className="w-full rounded-xl"
-                            >
-                                {savingPassword ? t("submitting") : t("changePassword")}
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             {/* 版本信息 */}
             <div>
                 <div className="rounded-3xl border border-border bg-card p-6 space-y-5">
@@ -546,6 +446,106 @@ export function SystemSettings({ onBack }: { onBack?: () => void }) {
                             className="rounded-xl"
                         />
                         <p className="text-xs text-muted-foreground">{t("uploadSessionTimeoutDesc")}</p>
+                    </div>
+                </div>
+            </div>
+
+            {/* 账户设置 */}
+            <div>
+                <div className="rounded-3xl border border-border bg-card p-6 space-y-5">
+                    <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
+                        <User className="h-5 w-5" />
+                        {t("accountSettings") || "账户设置"}
+                    </h2>
+                    
+                    {/* 修改用户名 */}
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-3">
+                            <Pencil className="h-5 w-5 text-muted-foreground" />
+                            <span className="text-sm font-medium">{t("changeUsername") || "修改用户名"}</span>
+                        </div>
+                        <div className="flex gap-2">
+                            <Input
+                                value={newUsername}
+                                onChange={(e) => setNewUsername(e.target.value)}
+                                placeholder={t("enterNewUsername") || "请输入新用户名"}
+                                className="rounded-xl flex-1"
+                            />
+                            <Button 
+                                onClick={handleChangeUsername} 
+                                disabled={savingUsername || !newUsername.trim()}
+                                className="rounded-xl"
+                            >
+                                {savingUsername ? t("submitting") : t("save")}
+                            </Button>
+                        </div>
+                    </div>
+
+                    <div className="border-t border-border" />
+
+                    {/* 修改密码 */}
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-3">
+                            <Lock className="h-5 w-5 text-muted-foreground" />
+                            <span className="text-sm font-medium">{t("changePassword") || "修改密码"}</span>
+                        </div>
+                        <div className="space-y-3">
+                            <div className="relative">
+                                <Input
+                                    type={showOldPassword ? "text" : "password"}
+                                    value={oldPassword}
+                                    onChange={(e) => setOldPassword(e.target.value)}
+                                    placeholder={t("currentPassword") || "请输入当前密码"}
+                                    className="rounded-xl pr-10"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowOldPassword(!showOldPassword)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                >
+                                    {showOldPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                </button>
+                            </div>
+                            <div className="relative">
+                                <Input
+                                    type={showNewPassword ? "text" : "password"}
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    placeholder={t("newPassword") || "请输入新密码"}
+                                    className="rounded-xl pr-10"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowNewPassword(!showNewPassword)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                >
+                                    {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                </button>
+                            </div>
+                            <div className="relative">
+                                <Input
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    placeholder={t("confirmNewPassword") || "请确认新密码"}
+                                    className="rounded-xl pr-10"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                >
+                                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                </button>
+                            </div>
+                            <Button 
+                                onClick={handleChangePassword} 
+                                disabled={savingPassword || !oldPassword || !newPassword || !confirmPassword}
+                                className="w-full rounded-xl"
+                            >
+                                {savingPassword ? t("submitting") : t("changePassword")}
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </div>

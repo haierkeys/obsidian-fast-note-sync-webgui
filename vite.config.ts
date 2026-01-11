@@ -1,4 +1,3 @@
-import { visualizer } from "rollup-plugin-visualizer";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import path from "path";
@@ -7,13 +6,6 @@ import path from "path";
 export default defineConfig({
   plugins: [
     react(),
-    // 构建分析工具 - 生成 stats.html 查看各依赖体积
-    visualizer({
-      open: false,
-      gzipSize: true,
-      brotliSize: true,
-      filename: "dist/stats.html",
-    }),
   ],
   resolve: {
     alias: {
