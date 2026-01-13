@@ -102,6 +102,15 @@ export function NoteManager({
         setHistoryModalOpen(true);
     };
 
+    // 历史版本恢复成功后的回调
+    const handleHistoryRestoreSuccess = () => {
+        // 如果当前正在编辑被恢复的笔记，需要刷新编辑器
+        if (selectedNote && selectedNoteForHistory && selectedNote.pathHash === selectedNoteForHistory.pathHash) {
+            // 通过重新设置 selectedNote 触发编辑器重新加载
+            setSelectedNote({ ...selectedNote, version: (selectedNote.version || 0) + 1 });
+        }
+    };
+
     // 检查是否有仓库（只在加载完成后显示空状态）
     if (vaultsLoaded.current && vaults.length === 0) {
         return (
@@ -176,6 +185,7 @@ export function NoteManager({
                     notePath={selectedNoteForHistory.path}
                     pathHash={selectedNoteForHistory.pathHash}
                     isRecycle={isRecycle}
+                    onRestoreSuccess={handleHistoryRestoreSuccess}
                 />
             )}
         </>

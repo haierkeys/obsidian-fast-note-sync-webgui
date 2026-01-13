@@ -1,6 +1,7 @@
-import { ChevronLeft, ChevronRight, History, FileText, Apple, Laptop, Chrome, Smartphone, Copy, Check } from "lucide-react";
+import { ChevronLeft, ChevronRight, History, FileText, Apple, Laptop, Chrome, Smartphone, Copy, Check, RotateCcw } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useNoteHandle } from "@/components/api-handle/note-handle";
 import { NoteHistory, NoteHistoryDetail } from "@/lib/types/note";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -32,11 +33,12 @@ interface NoteHistoryModalProps {
     notePath: string;
     pathHash?: string;
     isRecycle?: boolean;
+    onRestoreSuccess?: () => void;
 }
 
-export function NoteHistoryModal({ isOpen, onClose, vault, notePath, pathHash, isRecycle = false }: NoteHistoryModalProps) {
+export function NoteHistoryModal({ isOpen, onClose, vault, notePath, pathHash, isRecycle = false, onRestoreSuccess }: NoteHistoryModalProps) {
     const { t } = useTranslation();
-    const { handleNoteHistoryList, handleNoteHistoryDetail } = useNoteHandle();
+    const { handleNoteHistoryList, handleNoteHistoryDetail, handleRestoreFromHistory } = useNoteHandle();
     const [historyList, setHistoryList] = useState<NoteHistory[]>([]);
     const [page, setPage] = useState(1);
     const [totalRows, setTotalRows] = useState(0);
@@ -46,6 +48,8 @@ export function NoteHistoryModal({ isOpen, onClose, vault, notePath, pathHash, i
     const [showDiffOnly, setShowDiffOnly] = useState(false);
     const [showOriginal, setShowOriginal] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [restoreConfirmOpen, setRestoreConfirmOpen] = useState(false);
+    const [restoring, setRestoring] = useState(false);
     const pageSize = 5;
 
     const fetchHistoryList = (currentPage: number) => {
@@ -80,6 +84,20 @@ export function NoteHistoryModal({ isOpen, onClose, vault, notePath, pathHash, i
             setSelectedHistory(data);
             setDetailLoading(false);
         });
+    };
+
+    // 处理恢复到历史版本
+    const handleRestore = () => {
+        if (!selectedHistory) return;
+        setRestoring(true);
+        handleRestoreFromHistory(vault, selectedHistory.id, () => {
+            setRestoring(false);
+            setRestoreConfirmOpen(false);
+            onClose();
+            onRestoreSuccess?.();
+        });
+        // 如果请求失败，也需要重置状态
+        setTimeout(() => setRestoring(false), 5000);
     };
 
     const renderDiffs = (diffs: { Type: number, Text: string }[]) => {
@@ -234,6 +252,9 @@ export function NoteHistoryModal({ isOpen, onClose, vault, notePath, pathHash, i
                         <span className="hidden sm:inline shrink-0 text-muted-foreground">{t("noteHistory")}:</span>
                         <span className="truncate text-foreground font-medium">{String(notePath || "").replace(/\.md$/, "")}</span>
                     </DialogTitle>
+                    <DialogDescription className="sr-only">
+                        {t("noteHistoryDescription", "查看和恢复笔记的历史版本")}
+                    </DialogDescription>
                 </DialogHeader>
 
                 <div className="flex-1 overflow-auto py-2 sm:py-4 custom-scrollbar">
@@ -365,6 +386,18 @@ export function NoteHistoryModal({ isOpen, onClose, vault, notePath, pathHash, i
                                         </div>
                                     </h3>
                                     <div className="flex items-center gap-2 flex-wrap">
+                                        {/* 恢复到此版本按钮 */}
+                                        {!isRecycle && (
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => setRestoreConfirmOpen(true)}
+                                                className="h-8 px-3 text-blue-600 border-blue-200 hover:bg-blue-50 hover:border-blue-300"
+                                            >
+                                                <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
+                                                {t("restoreToVersion")}
+                                            </Button>
+                                        )}
                                         <div className="flex items-center space-x-2 bg-slate-100 px-2 sm:px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm">
                                             <Checkbox
                                                 id="showDiffOnly"
@@ -439,6 +472,24 @@ export function NoteHistoryModal({ isOpen, onClose, vault, notePath, pathHash, i
                     </div>
                 </div>
             </DialogContent>
+
+            {/* 恢复确认对话框 */}
+            <AlertDialog open={restoreConfirmOpen} onOpenChange={setRestoreConfirmOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>{t("restoreVersionConfirmTitle")}</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            {t("restoreVersionConfirmDesc", { version: selectedHistory?.version })}
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={restoring}>{t("cancel")}</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleRestore} disabled={restoring}>
+                            {restoring ? t("restoring") : t("confirm")}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </Dialog>
     );
 }

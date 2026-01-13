@@ -251,6 +251,30 @@ export function useNoteHandle() {
         }
     }, [getHeaders])
 
+    // 从历史版本恢复笔记
+    const handleRestoreFromHistory = useCallback(async (vault: string, historyId: number, callback: () => void) => {
+        try {
+            const body = { vault, historyId }
+            const response = await fetch(addCacheBuster(`${env.API_URL}/api/note/history/restore`), {
+                method: "PUT",
+                body: JSON.stringify(body),
+                headers: getHeaders(),
+            })
+            if (!response.ok) {
+                throw new Error("Network response was not ok")
+            }
+            const res: NoteResponse<unknown> = await response.json()
+            if (res.code > 0 && res.code <= 200) {
+                toast.success(res.message)
+                callback()
+            } else {
+                toast.error(res.message + (res.details ? ": " + res.details.join(", ") : ""))
+            }
+        } catch (error: unknown) {
+            toast.error(error instanceof Error ? error.message : String(error))
+        }
+    }, [getHeaders])
+
     return useMemo(() => ({
         handleNoteList,
         handleGetNote,
@@ -259,6 +283,7 @@ export function useNoteHandle() {
         handleRestoreNote,
         handleNoteHistoryList,
         handleNoteHistoryDetail,
+        handleRestoreFromHistory,
     }), [
         handleNoteList,
         handleGetNote,
@@ -267,5 +292,6 @@ export function useNoteHandle() {
         handleRestoreNote,
         handleNoteHistoryList,
         handleNoteHistoryDetail,
+        handleRestoreFromHistory,
     ])
 }

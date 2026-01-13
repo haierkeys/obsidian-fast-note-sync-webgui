@@ -345,9 +345,19 @@ export function NoteEditor({
                     )}
                     <span className="font-bold truncate">{filename}</span>
                 </div>
-                {/* 保存状态和更新时间显示 */}
+                {/* 保存状态、版本号和更新时间显示 */}
                 {!isRecycle && (
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground shrink-0">
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground shrink-0">
+                        {/* 版本号显示 */}
+                        {originalNote?.version !== undefined && originalNote.version > 0 && (
+                            <Tooltip content={t("historyVersion")} side="bottom" delay={200}>
+                                <span className="flex items-center gap-0.5 px-1 py-0.5 rounded bg-muted/50 text-muted-foreground hover:bg-muted cursor-default">
+                                    <History className="h-3 w-3" />
+                                    <span>v{originalNote.version}</span>
+                                </span>
+                            </Tooltip>
+                        )}
+                        {/* 保存状态 */}
                         {saving ? (
                             <>
                                 <Cloud className="h-3 w-3 sm:h-3.5 sm:w-3.5 animate-pulse" />
