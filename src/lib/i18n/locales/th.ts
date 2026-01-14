@@ -234,6 +234,7 @@ export default {
     colorScheme: "แบบสี",
     colorSchemeSwitched: "เปลี่ยนเป็นแบบ {{scheme}}",
     "colorScheme.green": "เขียว",
+    "colorScheme.blue": "น้ำเงิน",
     "colorScheme.skyBlue": "ฟ้าท้องฟ้า",
     "colorScheme.purple": "ม่วง",
     "colorScheme.orange": "ส้ม",

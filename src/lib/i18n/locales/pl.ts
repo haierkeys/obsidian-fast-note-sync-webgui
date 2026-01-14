@@ -234,6 +234,7 @@ export default {
     colorScheme: "Schemat kolorów",
     colorSchemeSwitched: "Przełączono na schemat {{scheme}}",
     "colorScheme.green": "Zielony",
+    "colorScheme.blue": "Niebieski",
     "colorScheme.skyBlue": "Błękitny",
     "colorScheme.purple": "Fioletowy",
     "colorScheme.orange": "Pomarańczowy",

@@ -234,6 +234,7 @@ export default {
     colorScheme: "Esquema de colors",
     colorSchemeSwitched: "Canviat a l'esquema {{scheme}}",
     "colorScheme.green": "Verd",
+    "colorScheme.blue": "Blau",
     "colorScheme.skyBlue": "Blau cel",
     "colorScheme.purple": "Porpra",
     "colorScheme.orange": "Taronja",

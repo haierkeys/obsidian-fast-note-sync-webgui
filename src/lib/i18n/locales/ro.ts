@@ -234,6 +234,7 @@ export default {
     colorScheme: "Schemă de Culori",
     colorSchemeSwitched: "Comutat la schema {{scheme}}",
     "colorScheme.green": "Verde",
+    "colorScheme.blue": "Albastru",
     "colorScheme.skyBlue": "Albastru Cer",
     "colorScheme.purple": "Mov",
     "colorScheme.orange": "Portocaliu",

@@ -234,6 +234,7 @@ export default {
     colorScheme: "색상 스킴",
     colorSchemeSwitched: "{{scheme}} 스킴으로 전환됨",
     "colorScheme.green": "그린",
+    "colorScheme.blue": "파란색",
     "colorScheme.skyBlue": "스카이 블루",
     "colorScheme.purple": "퍼플",
     "colorScheme.orange": "오렌지",

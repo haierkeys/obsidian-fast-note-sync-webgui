@@ -234,6 +234,7 @@ export default {
     colorScheme: "Skema e Ngjyrave",
     colorSchemeSwitched: "Kaloi në skemën {{scheme}}",
     "colorScheme.green": "E Gjelbër",
+    "colorScheme.blue": "Blu",
     "colorScheme.skyBlue": "Blu Qielli",
     "colorScheme.purple": "Vjollcë",
     "colorScheme.orange": "Portokalli",

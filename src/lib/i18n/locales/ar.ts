@@ -234,6 +234,7 @@ export default {
     colorScheme: "نظام الألوان",
     colorSchemeSwitched: "تم التبديل إلى نظام الألوان {{scheme}}",
     "colorScheme.green": "أخضر",
+    "colorScheme.blue": "أزرق",
     "colorScheme.skyBlue": "أزرق سماوي",
     "colorScheme.purple": "أرجواني",
     "colorScheme.orange": "برتقالي",

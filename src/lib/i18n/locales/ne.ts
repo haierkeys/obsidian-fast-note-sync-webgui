@@ -234,6 +234,7 @@ export default {
     colorScheme: "रंग योजना",
     colorSchemeSwitched: "{{scheme}} योजनामा परिवर्तन गरियो",
     "colorScheme.green": "हरियो",
+    "colorScheme.blue": "नीलो",
     "colorScheme.skyBlue": "आकाशे निलो",
     "colorScheme.purple": "बैजनी",
     "colorScheme.orange": "सुन्तला",

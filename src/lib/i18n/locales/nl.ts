@@ -234,6 +234,7 @@ export default {
     colorScheme: "Kleurenschema",
     colorSchemeSwitched: "Overgeschakeld naar {{scheme}} schema",
     "colorScheme.green": "Groen",
+    "colorScheme.blue": "Blauw",
     "colorScheme.skyBlue": "Hemelsblauw",
     "colorScheme.purple": "Paars",
     "colorScheme.orange": "Oranje",

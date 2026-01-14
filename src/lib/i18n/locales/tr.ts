@@ -234,6 +234,7 @@ export default {
     colorScheme: "Renk Şeması",
     colorSchemeSwitched: "{{scheme}} şemasına geçildi",
     "colorScheme.green": "Yeşil",
+    "colorScheme.blue": "Mavi",
     "colorScheme.skyBlue": "Gök Mavisi",
     "colorScheme.purple": "Mor",
     "colorScheme.orange": "Turuncu",

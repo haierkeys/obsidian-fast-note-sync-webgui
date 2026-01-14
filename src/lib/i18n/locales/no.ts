@@ -234,6 +234,7 @@ export default {
     colorScheme: "Fargeskjema",
     colorSchemeSwitched: "Byttet til {{scheme}} skjema",
     "colorScheme.green": "Grønn",
+    "colorScheme.blue": "Blå",
     "colorScheme.skyBlue": "Himmelblå",
     "colorScheme.purple": "Lilla",
     "colorScheme.orange": "Oransje",

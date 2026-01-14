@@ -234,6 +234,7 @@ export default {
     colorScheme: "Phối màu",
     colorSchemeSwitched: "Đã chuyển sang phối màu {{scheme}}",
     "colorScheme.green": "Xanh lá",
+    "colorScheme.blue": "Xanh dương",
     "colorScheme.skyBlue": "Xanh da trời",
     "colorScheme.purple": "Tím",
     "colorScheme.orange": "Cam",

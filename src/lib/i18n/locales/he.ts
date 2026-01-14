@@ -234,6 +234,7 @@ export default {
     colorScheme: "ערכת צבעים",
     colorSchemeSwitched: "הוחלף לערכת {{scheme}}",
     "colorScheme.green": "ירוק",
+    "colorScheme.blue": "כחול",
     "colorScheme.skyBlue": "כחול שמיים",
     "colorScheme.purple": "סגול",
     "colorScheme.orange": "כתום",

@@ -234,6 +234,7 @@ export default {
     colorScheme: "Színséma",
     colorSchemeSwitched: "Átváltva {{scheme}} sémára",
     "colorScheme.green": "Zöld",
+    "colorScheme.blue": "Kék",
     "colorScheme.skyBlue": "Égszínkék",
     "colorScheme.purple": "Lila",
     "colorScheme.orange": "Narancs",

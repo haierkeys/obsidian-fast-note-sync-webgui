@@ -234,6 +234,7 @@ export default {
     colorScheme: "配色スキーム",
     colorSchemeSwitched: "{{scheme}} スキームに切り替えました",
     "colorScheme.green": "グリーン",
+    "colorScheme.blue": "青",
     "colorScheme.skyBlue": "スカイブルー",
     "colorScheme.purple": "パープル",
     "colorScheme.orange": "オレンジ",

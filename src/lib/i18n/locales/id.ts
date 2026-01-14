@@ -234,6 +234,7 @@ export default {
     colorScheme: "Skema Warna",
     colorSchemeSwitched: "Beralih ke skema {{scheme}}",
     "colorScheme.green": "Hijau",
+    "colorScheme.blue": "Biru",
     "colorScheme.skyBlue": "Biru Langit",
     "colorScheme.purple": "Ungu",
     "colorScheme.orange": "Oranye",

@@ -234,6 +234,7 @@ export default {
     colorScheme: "Каляровая схема",
     colorSchemeSwitched: "Пераключана на схему {{scheme}}",
     "colorScheme.green": "Зялёны",
+    "colorScheme.blue": "Сіні",
     "colorScheme.skyBlue": "Нябесна-блакітны",
     "colorScheme.purple": "Пурпурны",
     "colorScheme.orange": "Аранжавы",
