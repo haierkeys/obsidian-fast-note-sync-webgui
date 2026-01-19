@@ -40,7 +40,7 @@ export function useFileHandle() {
     ) => {
         try {
             const apiUrl = env.API_URL.endsWith("/") ? env.API_URL.slice(0, -1) : env.API_URL;
-            let url = `${apiUrl}/api/files?vault=${vault}`;
+            let url = `${apiUrl}/api/files?vault=${encodeURIComponent(vault)}`;
 
             if (isRecycle) {
                 url += `&isRecycle=1`;

@@ -1,6 +1,6 @@
 import { Note, NoteDetail, NoteResponse, NoteHistoryDetail, NoteHistoryListResponse } from "@/lib/types/note";
-import { toast } from "@/components/common/Toast";
 import { addCacheBuster } from "@/lib/utils/cache-buster";
+import { toast } from "@/components/common/Toast";
 import { getBrowserLang } from "@/lib/i18n/utils";
 import { useCallback, useMemo } from "react";
 import env from "@/env.ts";
@@ -17,11 +17,11 @@ export function useNoteHandle() {
     }), [token])
 
     const handleNoteList = useCallback(async (
-        vault: string, 
-        page: number, 
-        pageSize: number, 
-        keyword: string = "", 
-        isRecycle: boolean = false, 
+        vault: string,
+        page: number,
+        pageSize: number,
+        keyword: string = "",
+        isRecycle: boolean = false,
         searchMode: string = "path",
         searchContent: boolean = false,
         sortBy: string = "mtime",
@@ -33,7 +33,7 @@ export function useNoteHandle() {
             const pageStr = Math.floor(page).toString();
             const pageSizeStr = Math.floor(pageSize).toString();
 
-            let url = `${env.API_URL}/api/notes?vault=${vault}&page=${pageStr}&pageSize=${pageSizeStr}`;
+            let url = `${env.API_URL}/api/notes?vault=${encodeURIComponent(vault)}&page=${pageStr}&pageSize=${pageSizeStr}`;
             if (keyword) {
                 url += `&keyword=${encodeURIComponent(keyword)}`;
             }
@@ -76,7 +76,7 @@ export function useNoteHandle() {
 
     const handleGetNote = useCallback(async (vault: string, path: string, pathHash: string | undefined, isRecycle: boolean = false, callback: (note: NoteDetail) => void) => {
         try {
-            let url = `${env.API_URL}/api/note?vault=${vault}&path=${encodeURIComponent(path)}`;
+            let url = `${env.API_URL}/api/note?vault=${encodeURIComponent(vault)}&path=${encodeURIComponent(path)}`;
             if (pathHash) {
                 url += `&pathHash=${pathHash}`;
             }
@@ -204,7 +204,7 @@ export function useNoteHandle() {
         try {
             const pageStr = Math.floor(page).toString();
             const pageSizeStr = Math.floor(pageSize).toString();
-            let url = `${env.API_URL}/api/note/histories?vault=${vault}&path=${encodeURIComponent(notePath)}&page=${pageStr}&pageSize=${pageSizeStr}`;
+            let url = `${env.API_URL}/api/note/histories?vault=${encodeURIComponent(vault)}&path=${encodeURIComponent(notePath)}&page=${pageStr}&pageSize=${pageSizeStr}`;
             if (pathHash) {
                 url += `&pathHash=${pathHash}`;
             }
@@ -233,7 +233,7 @@ export function useNoteHandle() {
 
     const handleNoteHistoryDetail = useCallback(async (vault: string, id: number, callback: (data: NoteHistoryDetail) => void) => {
         try {
-            const response = await fetch(addCacheBuster(`${env.API_URL}/api/note/history?vault=${vault}&id=${id}`), {
+            const response = await fetch(addCacheBuster(`${env.API_URL}/api/note/history?vault=${encodeURIComponent(vault)}&id=${id}`), {
                 method: "GET",
                 headers: getHeaders(),
             })

@@ -73,7 +73,7 @@ function SortableVaultCard({
     <article
       ref={setNodeRef}
       style={style}
-      className="relative flex flex-col gap-4 rounded-xl border border-border bg-card p-5 transition-all duration-300 hover:scale-[1.02] cursor-pointer"
+      className="relative flex flex-col gap-4 rounded-xl border border-border bg-card p-5 transition-all duration-200 hover:shadow-md hover:border-primary/30 cursor-pointer"
       onClick={() => editingId !== vault.id && onNavigateToNotes && onNavigateToNotes(vault.vault)}
     >
       {/* 头部：仓库名称 */}
