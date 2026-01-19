@@ -1,7 +1,7 @@
-import { X, ExternalLink, Download, FileText, FileCode, Paperclip } from "lucide-react";
+import { X, ExternalLink, Download, FileText, FileCode, Paperclip, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { useRef, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useRef, useEffect } from "react";
 import { File } from "@/lib/types/file";
 
 
@@ -21,6 +21,12 @@ export function FilePreview({ file, url, onClose }: FilePreviewProps) {
 
     const fileName = file.path.split('/').pop() || file.path;
     const mediaRef = useRef<HTMLMediaElement>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    // 当 URL 变化时重置加载状态
+    useEffect(() => {
+        setIsLoading(true);
+    }, [url]);
 
     // 加载记忆的音量
     useEffect(() => {
@@ -33,6 +39,10 @@ export function FilePreview({ file, url, onClose }: FilePreviewProps) {
     // 处理音量变化并保存
     const handleVolumeChange = (e: React.SyntheticEvent<HTMLMediaElement>) => {
         localStorage.setItem('preview-volume', e.currentTarget.volume.toString());
+    };
+
+    const handleLoaded = () => {
+        setIsLoading(false);
     };
 
     return (
@@ -74,16 +84,33 @@ export function FilePreview({ file, url, onClose }: FilePreviewProps) {
                 </div>
 
                 {/* 内容区域 */}
-                <div className="p-4 flex items-center justify-center bg-black/5 min-h-50">
+                <div className="relative p-4 flex items-center justify-center bg-black/5 min-h-50 overflow-hidden text-center">
+                    {/* 加载动画过度层 */}
+                    <AnimatePresence>
+                        {isLoading && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-card/80 backdrop-blur-sm pointer-events-none"
+                            >
+                                <Loader2 className="h-8 w-8 animate-spin text-primary mb-2" />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
                     {isImage && (
                         <img
+                            key={url}
                             src={url}
                             alt={fileName}
-                            className="max-w-full max-h-100 object-contain rounded-lg shadow-sm"
+                            className={`max-w-full max-h-100 object-contain rounded-lg shadow-sm transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+                            onLoad={handleLoaded}
+                            onError={handleLoaded}
                         />
                     )}
                     {isAudio && (
-                        <div className="w-full py-8 text-center">
+                        <div key={url} className="w-full py-8">
                             <div className="mb-4 flex justify-center">
                                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary animate-pulse">
                                     <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
@@ -98,17 +125,24 @@ export function FilePreview({ file, url, onClose }: FilePreviewProps) {
                                 autoPlay
                                 className="w-full"
                                 onVolumeChange={handleVolumeChange}
+                                onLoadedMetadata={handleLoaded}
+                                onCanPlay={handleLoaded}
+                                onError={handleLoaded}
                             />
                         </div>
                     )}
                     {isVideo && (
                         <video
+                            key={url}
                             ref={mediaRef as React.RefObject<HTMLVideoElement>}
                             src={url}
                             controls
                             autoPlay
-                            className="max-w-full max-h-100 rounded-lg shadow-sm"
+                            className={`max-w-full max-h-100 rounded-lg shadow-sm transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
                             onVolumeChange={handleVolumeChange}
+                            onLoadedMetadata={handleLoaded}
+                            onCanPlay={handleLoaded}
+                            onError={handleLoaded}
                         />
                     )}
                     {!isImage && !isAudio && !isVideo && (

@@ -22,22 +22,14 @@ export default defineConfig({
     chunkSizeWarningLimit: 1500, // 降低警告阈值到 1MB
     rollupOptions: {
       output: {
-        // 代码分块策略
+        // 代码分块策略 - 简化版以避免循环依赖
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            // 将 React 相关库打包到 react 块
-            if (id.includes('react')) {
-              return 'vendor-react';
-            }
-            // 将 Vditor 相关库打包到 editor 块
+            // 仅将最大的 Vditor 编辑器库独立拆分
             if (id.includes('vditor')) {
               return 'vendor-editor';
             }
-            // 将 Lucide 图标和 Motion 动画库打包在一起
-            if (id.includes('lucide-react') || id.includes('motion')) {
-              return 'vendor-ui';
-            }
-            // 其他第三方库
+            // 其余第三方库合并为 vendor 块，确保 React 等核心库初始化顺序正确
             return 'vendor';
           }
         },

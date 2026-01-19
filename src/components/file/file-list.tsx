@@ -309,6 +309,7 @@ export function FileList({ vault, vaults, onVaultChange, isRecycle = false }: Fi
             {/* 预览组件 */}
             {previewFile && (
                 <FilePreview
+                    key={previewUrl}
                     file={previewFile}
                     url={previewUrl}
                     onClose={() => {
