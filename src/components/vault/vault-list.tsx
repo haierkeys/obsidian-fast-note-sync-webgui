@@ -17,6 +17,7 @@ import env from "@/env.ts";
 
 interface VaultListProps {
   onNavigateToNotes?: (vaultName: string) => void;
+  onNavigateToAttachments?: (vaultName: string) => void;
 }
 
 // 可排序的仓库卡片组件
@@ -32,7 +33,8 @@ interface SortableVaultCardProps {
   onViewConfig: (vaultName: string, e: React.MouseEvent) => void;
   onQuickCopy: (vaultName: string, e: React.MouseEvent) => void;
   onNavigateToNotes?: (vaultName: string) => void;
-  formatBytes: (bytes: string | undefined) => string;
+  onNavigateToAttachments?: (vaultName: string) => void;
+  formatBytes: (bytes: string | number | undefined) => string;
   t: (key: string, options?: Record<string, unknown>) => string;
 }
 
@@ -48,6 +50,7 @@ function SortableVaultCard({
   onViewConfig,
   onQuickCopy,
   onNavigateToNotes,
+  onNavigateToAttachments,
   formatBytes,
   t,
 }: SortableVaultCardProps) {
@@ -109,13 +112,43 @@ function SortableVaultCard({
 
       {/* 统计信息 */}
       <dl className="grid grid-cols-2 gap-3">
-        <div className="flex flex-col rounded-lg border border-border/70 bg-background/80 p-3">
-          <dt className="text-xs text-muted-foreground">{t("note") || "笔记"}</dt>
-          <dd className="text-xl font-semibold">{vault.noteCount}</dd>
+        <div
+          className="flex flex-col rounded-lg border border-border/70 bg-background/80 p-3 hover:bg-primary/5 hover:border-primary/30 transition-colors group/stat"
+          onClick={(e) => {
+            if (editingId !== vault.id && onNavigateToNotes) {
+              e.stopPropagation();
+              onNavigateToNotes(vault.vault);
+            }
+          }}
+        >
+          <dt className="text-xs text-muted-foreground group-hover/stat:text-primary transition-colors">{t("note") || "笔记"}</dt>
+          <dd className="text-xl font-semibold flex items-center justify-between gap-1">
+            <span>{vault.noteCount}</span>
+            {vault.noteSize !== undefined && (
+              <span className="text-[10px] font-normal text-muted-foreground/50">
+                {formatBytes(vault.noteSize)}
+              </span>
+            )}
+          </dd>
         </div>
-        <div className="flex flex-col rounded-lg border border-border/70 bg-background/80 p-3">
-          <dt className="text-xs text-muted-foreground">{t("attachmentCount") || "附件"}</dt>
-          <dd className="text-xl font-semibold">{vault.fileCount || "0"}</dd>
+        <div
+          className="flex flex-col rounded-lg border border-border/70 bg-background/80 p-3 hover:bg-primary/5 hover:border-primary/30 transition-colors group/stat"
+          onClick={(e) => {
+            if (editingId !== vault.id && onNavigateToAttachments) {
+              e.stopPropagation();
+              onNavigateToAttachments(vault.vault);
+            }
+          }}
+        >
+          <dt className="text-xs text-muted-foreground group-hover/stat:text-primary transition-colors">{t("attachmentCount") || "附件"}</dt>
+          <dd className="text-xl font-semibold flex items-center justify-between gap-1">
+            <span>{vault.fileCount || "0"}</span>
+            {vault.fileSize !== undefined && (
+              <span className="text-[10px] font-normal text-muted-foreground/50">
+                {formatBytes(vault.fileSize)}
+              </span>
+            )}
+          </dd>
         </div>
       </dl>
 
@@ -228,7 +261,7 @@ function SortableVaultCard({
 // 本地存储排序顺序的 key
 const VAULT_ORDER_KEY = "vault-sort-order"
 
-export function VaultList({ onNavigateToNotes }: VaultListProps) {
+export function VaultList({ onNavigateToNotes, onNavigateToAttachments }: VaultListProps) {
   const { t } = useTranslation()
   const [vaults, setVaults] = useState<VaultType[]>([])
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -366,11 +399,14 @@ export function VaultList({ onNavigateToNotes }: VaultListProps) {
     })
   }
 
-  // 格式化字节为 MB
-  const formatBytes = (bytes: string | undefined): string => {
-    if (!bytes) return "0 MB"
-    const numBytes = parseInt(bytes)
-    if (isNaN(numBytes)) return "0 MB"
+  // 格式化字节
+  const formatBytes = (bytes: string | number | undefined): string => {
+    if (bytes === undefined || bytes === null || bytes === "") return "0 B"
+    const numBytes = typeof bytes === 'string' ? parseInt(bytes) : bytes
+    if (isNaN(numBytes) || numBytes === 0) return "0 B"
+
+    if (numBytes < 1024) return `${numBytes} B`
+    if (numBytes < 1024 * 1024) return `${(numBytes / 1024).toFixed(2)} KB`
     const mb = numBytes / (1024 * 1024)
     return `${mb.toFixed(2)} MB`
   }
@@ -556,6 +592,7 @@ export function VaultList({ onNavigateToNotes }: VaultListProps) {
                   onViewConfig={handleViewConfig}
                   onQuickCopy={handleQuickCopy}
                   onNavigateToNotes={onNavigateToNotes}
+                  onNavigateToAttachments={onNavigateToAttachments}
                   formatBytes={formatBytes}
                   t={t}
                 />

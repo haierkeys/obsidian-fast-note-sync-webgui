@@ -292,6 +292,10 @@ function App() {
               setActiveVault(vaultName)
               setModule("notes")
             }}
+            onNavigateToAttachments={(vaultName) => {
+              setActiveVault(vaultName)
+              setModule("files")
+            }}
           />
         )
     }

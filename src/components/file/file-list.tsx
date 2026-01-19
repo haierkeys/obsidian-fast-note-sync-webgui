@@ -1,4 +1,4 @@
-import { FileText, Trash2, RefreshCw, Search, X, Calendar, Clock, ArrowUpDown, Paperclip, Image, Music, Video, FileCode } from "lucide-react";
+import { FileText, Trash2, RefreshCw, Search, X, Calendar, Clock, ArrowUpDown, Paperclip, Image, Music, Video, FileCode, RotateCcw } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useConfirmDialog } from "@/components/context/confirm-dialog-context";
 import { useFileHandle } from "@/components/api-handle/file-handle";
@@ -37,7 +37,7 @@ function formatFileSize(bytes: number): string {
 
 export function FileList({ vault, vaults, onVaultChange, isRecycle = false }: FileListProps) {
     const { t } = useTranslation();
-    const { handleFileList, handleDeleteFile, getRawFileUrl } = useFileHandle();
+    const { handleFileList, handleDeleteFile, handleRestoreFile, getRawFileUrl } = useFileHandle();
     const { openConfirmDialog } = useConfirmDialog();
     const [files, setFiles] = useState<File[]>([]);
     const [loading, setLoading] = useState(false);
@@ -75,6 +75,15 @@ export function FileList({ vault, vaults, onVaultChange, isRecycle = false }: Fi
         e.stopPropagation();
         openConfirmDialog(t("deleteFileConfirm", { title: file.path }), "confirm", () => {
             handleDeleteFile(vault, file.path, file.pathHash, () => {
+                fetchFiles();
+            });
+        });
+    };
+
+    const onRestore = (e: React.MouseEvent, file: File) => {
+        e.stopPropagation();
+        openConfirmDialog(t("restoreFileConfirm", { title: file.path }), "confirm", () => {
+            handleRestoreFile(vault, file.path, file.pathHash, () => {
                 fetchFiles();
             });
         });
@@ -274,6 +283,18 @@ export function FileList({ vault, vaults, onVaultChange, isRecycle = false }: Fi
                                                     onClick={(e) => onDelete(e, file)}
                                                 >
                                                     <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            </Tooltip>
+                                        )}
+                                        {isRecycle && (
+                                            <Tooltip content={t("restore")} side="top" delay={200}>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 rounded-xl text-muted-foreground hover:text-green-600"
+                                                    onClick={(e) => onRestore(e, file)}
+                                                >
+                                                    <RotateCcw className="h-4 w-4" />
                                                 </Button>
                                             </Tooltip>
                                         )}

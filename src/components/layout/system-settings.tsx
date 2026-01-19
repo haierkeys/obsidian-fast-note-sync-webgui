@@ -203,7 +203,7 @@ export function SystemSettings({ onBack }: { onBack?: () => void }) {
                             <span className="text-sm font-medium">{t("githubRepo")}</span>
                         </div>
                         <a href="https://github.com/haierkeys/fast-note-sync-service" target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">
-                            haierkeys/fast-note-sync-service
+                            https://github.com/haierkeys/fast-note-sync-service
                         </a>
                     </div>
                     <div className="flex items-center justify-between gap-4">

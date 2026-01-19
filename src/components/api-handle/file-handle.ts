@@ -98,14 +98,58 @@ export function useFileHandle() {
         callback: () => void
     ) => {
         try {
+            const body = {
+                vault,
+                path,
+                pathHash,
+            };
             const apiUrl = env.API_URL.endsWith("/") ? env.API_URL.slice(0, -1) : env.API_URL;
-            let url = `${apiUrl}/api/file?vault=${vault}&path=${encodeURIComponent(path)}`;
-            if (pathHash) {
-                url += `&pathHash=${pathHash}`;
+            const response = await fetch(addCacheBuster(`${apiUrl}/api/file`), {
+                method: "DELETE",
+                body: JSON.stringify(body),
+                headers: getHeaders(),
+            });
+
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
             }
 
-            const response = await fetch(addCacheBuster(url), {
-                method: "DELETE",
+            const res: { code: number; message: string; details?: string[] } = await response.json();
+
+            if (res.code > 0 && res.code <= 200) {
+                toast.success(res.message);
+                callback();
+            } else {
+                toast.error(res.message + (res.details ? ": " + res.details.join(", ") : ""));
+            }
+        } catch (error: unknown) {
+            toast.error(error instanceof Error ? error.message : String(error));
+        }
+    }, [getHeaders]);
+
+    /**
+     * 恢复附件
+     * @param vault 仓库名称
+     * @param path 文件路径
+     * @param pathHash 路径哈希值
+     * @param callback 成功回调
+     */
+    const handleRestoreFile = useCallback(async (
+        vault: string,
+        path: string,
+        pathHash: string | undefined,
+        callback: () => void
+    ) => {
+        try {
+            const body = {
+                vault,
+                path,
+                pathHash,
+            };
+            const apiUrl = env.API_URL.endsWith("/") ? env.API_URL.slice(0, -1) : env.API_URL;
+            const response = await fetch(addCacheBuster(`${apiUrl}/api/file/restore`), {
+                method: "PUT",
+                body: JSON.stringify(body),
                 headers: getHeaders(),
             });
 
@@ -142,10 +186,12 @@ export function useFileHandle() {
     return useMemo(() => ({
         handleFileList,
         handleDeleteFile,
+        handleRestoreFile,
         getRawFileUrl,
     }), [
         handleFileList,
         handleDeleteFile,
+        handleRestoreFile,
         getRawFileUrl,
     ]);
 }

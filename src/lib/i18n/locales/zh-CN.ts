@@ -150,7 +150,7 @@ export default {
     historyKeepVersions: "历史记录保留版本数",
     historySaveDelay: "历史记录保存延迟",
     adminUid: "系统设置访问限制 ( 用户 UID )",
-    fontSetDesc: "设置 WebGui 界面字体，留空则使用系统默认字体。\n支持 远程 <u>CSS 字体样式表</u> 或 <u>字体网络地址</u> 以及 <u>预设样式表关键字</u>（ 放在 frontend/static/fonts/ 目录下 ）默认：空。\n示例: \n&nbsp;&nbsp;1. https://fonts.googleapis.com/css2?family=Noto+Sans+SC&display=swap\n&nbsp;&nbsp;2. /static/fonts/font.css\n&nbsp;&nbsp;3. local 或 remote\n&nbsp;&nbsp;4. https://ik.imagekit.io/haierkeys/LXGWWenKai-Light.woff2",
+    fontSetDesc: "设置 WebGui 界面字体，留空则使用系统默认字体。\n支持 <u>远程 CSS 字体样式表</u> 或 <u>预设 CSS 样式表关键字</u> 或 <u>字体网络地址</u> 以及 <u>本地字体</u>（ 放在 storage/user_static/ 目录下 ）默认：空。\n\n示例: \n&nbsp;&nbsp;- 远程 CSS 字体样式表: <b>https://fonts.googleapis.com/css2?family=Noto+Sans+SC&display=swap</b>\n&nbsp;&nbsp;- 预设 CSS 样式表关键字: <b>local</b> 或 <b>remote</b>\n&nbsp;&nbsp;- 本地预设 CSS 字体样式表: <b>/static/fonts/font.css</b>\n&nbsp;&nbsp;- 字体网络地址: <b>https://ik.imagekit.io/name/your-font.woff2</b>\n&nbsp;&nbsp;- 本地字体: <b>/user_static/your-font.woff2</b>, 需要将字体文件 <u>your-font.woff2</u> 放在 storage/user_static/ 目录下",
     authTokenKeyDesc: "本设置项参与所有用户的服务令牌生成过程，首次部署之后为了服务端的安全性，<u><b>强烈建议修改本项</b></u>，一旦修改原有令牌立刻失效，WebGui 也需要重新登录。",
     tokenExpiryDesc: "用户服务令牌的过期时间，支持格式：7d（天）、24h（小时）、30m（分钟），默认：<b>365d</b>",
     shareTokenKeyDesc: "用于生成分享令牌的加密混淆 Key，修改后原有分享链接将失效，默认：<b>fns</b>",
@@ -273,4 +273,5 @@ export default {
     noFiles: "暂无附件",
     searchFilePlaceholder: "搜索附件...",
     deleteFileConfirm: "确定要删除附件 \"{{title}}\" 吗？",
+    restoreFileConfirm: "确定要恢复附件 \"{{title}}\" 吗？",
 };
