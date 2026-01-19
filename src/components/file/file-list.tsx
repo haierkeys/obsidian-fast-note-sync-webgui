@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input";
 import { File } from "@/lib/types/file";
 import { format } from "date-fns";
 
+import { FilePreview } from "./file-preview";
+
 
 type SortBy = "mtime" | "ctime" | "path";
 type SortOrder = "desc" | "asc";
@@ -35,7 +37,7 @@ function formatFileSize(bytes: number): string {
 
 export function FileList({ vault, vaults, onVaultChange, isRecycle = false }: FileListProps) {
     const { t } = useTranslation();
-    const { handleFileList, handleDeleteFile } = useFileHandle();
+    const { handleFileList, handleDeleteFile, getRawFileUrl } = useFileHandle();
     const { openConfirmDialog } = useConfirmDialog();
     const [files, setFiles] = useState<File[]>([]);
     const [loading, setLoading] = useState(false);
@@ -43,6 +45,10 @@ export function FileList({ vault, vaults, onVaultChange, isRecycle = false }: Fi
     const [debouncedKeyword, setDebouncedKeyword] = useState(searchKeyword);
     const [sortBy, setSortBy] = useState<SortBy>("mtime");
     const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
+
+    // 预览相关状态
+    const [previewFile, setPreviewFile] = useState<File | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string>("");
 
     // Debounce search keyword
     useEffect(() => {
@@ -72,6 +78,15 @@ export function FileList({ vault, vaults, onVaultChange, isRecycle = false }: Fi
                 fetchFiles();
             });
         });
+    };
+
+    /**
+     * 处理文件点击 (预览或下载)
+     */
+    const handleItemClick = (file: File) => {
+        const url = getRawFileUrl(vault, file.path, file.pathHash?.toString());
+        setPreviewFile(file);
+        setPreviewUrl(url);
     };
 
     /**
@@ -214,7 +229,8 @@ export function FileList({ vault, vaults, onVaultChange, isRecycle = false }: Fi
                         {files.map((file, index) => (
                             <article
                                 key={`${file.pathHash}-${index}`}
-                                className="rounded-xl border border-border bg-card p-4 transition-all duration-200 hover:shadow-md hover:border-primary/30"
+                                className="rounded-xl border border-border bg-card p-4 transition-all duration-200 hover:shadow-md hover:border-primary/30 cursor-pointer"
+                                onClick={() => handleItemClick(file)}
                             >
                                 <div className="flex items-center justify-between gap-4">
                                     {/* 左侧：图标和内容 */}
@@ -267,6 +283,18 @@ export function FileList({ vault, vaults, onVaultChange, isRecycle = false }: Fi
                         ))}
                     </div>
                 </div>
+            )}
+
+            {/* 预览组件 */}
+            {previewFile && (
+                <FilePreview
+                    file={previewFile}
+                    url={previewUrl}
+                    onClose={() => {
+                        setPreviewFile(null);
+                        setPreviewUrl("");
+                    }}
+                />
             )}
         </div>
     );
