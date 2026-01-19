@@ -1,6 +1,6 @@
-import { toast } from "@/components/common/Toast";
 import { addCacheBuster } from "@/lib/utils/cache-buster";
 import type { ChangePassword } from "@/lib/types/user";
+import { toast } from "@/components/common/Toast";
 import { getBrowserLang } from "@/lib/i18n/utils";
 import { useTranslation } from "react-i18next";
 import { useCallback, useMemo } from "react";
@@ -36,7 +36,7 @@ export function useUserHandle() {
         logout()
       }
     } catch (e) {
-      console.error("Failed to fetch user info (network error):", e)
+      console.error(t("getWebGuiConfigError"), e)
       // 请求失败时不清理本地存储
     }
   }, [token, t])

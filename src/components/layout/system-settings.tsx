@@ -23,6 +23,9 @@ const TOAST_POSITIONS: ToastPosition[] = [
 interface SystemConfig {
     fontSet: string
     authTokenKey: string
+    tokenExpiry: string
+    shareTokenKey: string
+    shareTokenExpiry: string
     registerIsEnable: boolean
     fileChunkSize: string
     softDeleteRetentionTime: string
@@ -345,6 +348,39 @@ export function SystemSettings({ onBack }: { onBack?: () => void }) {
                         </div>
                         <Input value={config.authTokenKey} onChange={(e) => updateConfig({ authTokenKey: e.target.value })} placeholder="e.g. token" className="rounded-xl" />
                         <p className="text-xs text-muted-foreground whitespace-pre-line" dangerouslySetInnerHTML={{ __html: t("authTokenKeyDesc") }} />
+                    </div>
+
+                    <div className="border-t border-border" />
+
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-3">
+                            <Clock className="h-5 w-5 text-muted-foreground" />
+                            <span className="text-sm font-medium">{t("tokenExpiry")}</span>
+                        </div>
+                        <Input value={config.tokenExpiry} onChange={(e) => updateConfig({ tokenExpiry: e.target.value })} placeholder="e.g. 365d, 24h, 30m" className="rounded-xl" />
+                        <p className="text-xs text-muted-foreground whitespace-pre-line" dangerouslySetInnerHTML={{ __html: t("tokenExpiryDesc") }} />
+                    </div>
+
+                    <div className="border-t border-border" />
+
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-3">
+                            <Shield className="h-5 w-5 text-muted-foreground" />
+                            <span className="text-sm font-medium">{t("shareTokenKey")}</span>
+                        </div>
+                        <Input value={config.shareTokenKey} onChange={(e) => updateConfig({ shareTokenKey: e.target.value })} placeholder="e.g. fns" className="rounded-xl" />
+                        <p className="text-xs text-muted-foreground whitespace-pre-line" dangerouslySetInnerHTML={{ __html: t("shareTokenKeyDesc") }} />
+                    </div>
+
+                    <div className="border-t border-border" />
+
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-3">
+                            <Clock className="h-5 w-5 text-muted-foreground" />
+                            <span className="text-sm font-medium">{t("shareTokenExpiry")}</span>
+                        </div>
+                        <Input value={config.shareTokenExpiry} onChange={(e) => updateConfig({ shareTokenExpiry: e.target.value })} placeholder="e.g. 30d, 24h, 30m" className="rounded-xl" />
+                        <p className="text-xs text-muted-foreground whitespace-pre-line" dangerouslySetInnerHTML={{ __html: t("shareTokenExpiryDesc") }} />
                     </div>
 
                     <div className="border-t border-border" />

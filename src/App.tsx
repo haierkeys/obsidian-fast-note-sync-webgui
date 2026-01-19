@@ -156,7 +156,7 @@ function App() {
         }
       } catch (error) {
         if (isMounted) {
-          console.error("Failed to fetch webgui config:", error)
+          console.error(t("getWebGuiConfigError"), error)
         }
       }
     }

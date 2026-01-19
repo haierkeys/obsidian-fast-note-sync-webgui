@@ -1,5 +1,6 @@
 import { addCacheBuster } from "@/lib/utils/cache-buster";
 import { getBrowserLang } from "@/lib/i18n/utils";
+import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
 import env from "@/env.ts";
 
@@ -11,6 +12,7 @@ export interface VersionInfo {
 }
 
 export function useVersion() {
+    const { t } = useTranslation()
     const [versionInfo, setVersionInfo] = useState<VersionInfo | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -37,10 +39,10 @@ export function useVersion() {
                 if (res.code < 100 && res.code > 0 && res.data) {
                     setVersionInfo(res.data);
                 } else {
-                    setError(res.message || "Failed to fetch version info");
+                    setError(res.message || t('getVersionError'));
                 }
             } catch (error) {
-                setError("Failed to fetch version info");
+                setError(t('getVersionError'));
                 console.error("Version fetch error:", error);
             } finally {
                 setIsLoading(false);
