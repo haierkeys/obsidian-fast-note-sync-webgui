@@ -1,6 +1,7 @@
-import { FileText, Trash2, RefreshCw, Search, X, Calendar, Clock, ArrowUpDown, Paperclip, Image, Music, Video, FileCode, RotateCcw } from "lucide-react";
+import { FileText, Trash2, RefreshCw, Search, X, Calendar, Clock, ArrowUpDown, Paperclip, Image, Music, Video, FileCode, RotateCcw, ChevronLeft, ChevronRight } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useConfirmDialog } from "@/components/context/confirm-dialog-context";
+import { FileListResponse, File as FileDTO } from "@/lib/types/file";
 import { useFileHandle } from "@/components/api-handle/file-handle";
 import React, { useState, useEffect } from "react";
 import { Tooltip } from "@/components/ui/tooltip";
@@ -8,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { VaultType } from "@/lib/types/vault";
 import { Input } from "@/components/ui/input";
-import { File } from "@/lib/types/file";
 import { format } from "date-fns";
 
 import { FilePreview } from "./file-preview";
@@ -22,6 +22,12 @@ interface FileListProps {
     vaults?: VaultType[];
     onVaultChange?: (vault: string) => void;
     isRecycle?: boolean;
+    page: number;
+    setPage: (page: number) => void;
+    pageSize: number;
+    setPageSize: (pageSize: number) => void;
+    searchKeyword: string;
+    setSearchKeyword: (keyword: string) => void;
 }
 
 /**
@@ -35,19 +41,19 @@ function formatFileSize(bytes: number): string {
     return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
 }
 
-export function FileList({ vault, vaults, onVaultChange, isRecycle = false }: FileListProps) {
+export function FileList({ vault, vaults, onVaultChange, isRecycle = false, page, setPage, pageSize, setPageSize, searchKeyword, setSearchKeyword }: FileListProps) {
     const { t } = useTranslation();
     const { handleFileList, handleDeleteFile, handleRestoreFile, getRawFileUrl } = useFileHandle();
     const { openConfirmDialog } = useConfirmDialog();
-    const [files, setFiles] = useState<File[]>([]);
+    const [files, setFiles] = useState<FileDTO[]>([]);
     const [loading, setLoading] = useState(false);
-    const [searchKeyword, setSearchKeyword] = useState("");
+    const [totalRows, setTotalRows] = useState(0);
     const [debouncedKeyword, setDebouncedKeyword] = useState(searchKeyword);
     const [sortBy, setSortBy] = useState<SortBy>("mtime");
     const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
 
     // 预览相关状态
-    const [previewFile, setPreviewFile] = useState<File | null>(null);
+    const [previewFile, setPreviewFile] = useState<FileDTO | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string>("");
 
     // Debounce search keyword
@@ -58,20 +64,32 @@ export function FileList({ vault, vaults, onVaultChange, isRecycle = false }: Fi
         return () => clearTimeout(timer);
     }, [searchKeyword]);
 
-    const fetchFiles = (keyword: string = debouncedKeyword) => {
+    const fetchFiles = (currentPage: number = page, currentPageSize: number = pageSize, keyword: string = debouncedKeyword) => {
         setLoading(true);
-        handleFileList(vault, isRecycle, keyword, sortBy, sortOrder, (data) => {
+        handleFileList(vault, currentPage, currentPageSize, isRecycle, keyword, sortBy, sortOrder, (data) => {
             setFiles(data.list || []);
+            setTotalRows(data.pager?.totalRows || 0);
             setLoading(false);
         });
     };
 
     useEffect(() => {
-        fetchFiles(debouncedKeyword);
+        fetchFiles(page, pageSize, debouncedKeyword);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [vault, debouncedKeyword, isRecycle, sortBy, sortOrder]);
+    }, [vault, page, pageSize, debouncedKeyword, isRecycle, sortBy, sortOrder]);
 
-    const onDelete = (e: React.MouseEvent, file: File) => {
+    // Reset page to 1 when search keyword changes
+    useEffect(() => {
+        setPage(1);
+    }, [debouncedKeyword, setPage]);
+
+    const handlePageChange = (newPage: number) => {
+        if (newPage >= 1 && newPage <= Math.ceil(totalRows / pageSize)) {
+            setPage(newPage);
+        }
+    };
+
+    const onDelete = (e: React.MouseEvent, file: FileDTO) => {
         e.stopPropagation();
         openConfirmDialog(t("deleteFileConfirm", { title: file.path }), "confirm", () => {
             handleDeleteFile(vault, file.path, file.pathHash, () => {
@@ -80,7 +98,7 @@ export function FileList({ vault, vaults, onVaultChange, isRecycle = false }: Fi
         });
     };
 
-    const onRestore = (e: React.MouseEvent, file: File) => {
+    const onRestore = (e: React.MouseEvent, file: FileDTO) => {
         e.stopPropagation();
         openConfirmDialog(t("restoreFileConfirm", { title: file.path }), "confirm", () => {
             handleRestoreFile(vault, file.path, file.pathHash, () => {
@@ -92,7 +110,7 @@ export function FileList({ vault, vaults, onVaultChange, isRecycle = false }: Fi
     /**
      * 处理文件点击 (预览或下载)
      */
-    const handleItemClick = (file: File) => {
+    const handleItemClick = (file: FileDTO) => {
         const url = getRawFileUrl(vault, file.path, file.pathHash?.toString());
         setPreviewFile(file);
         setPreviewUrl(url);
@@ -129,6 +147,8 @@ export function FileList({ vault, vaults, onVaultChange, isRecycle = false }: Fi
         return <Paperclip className="h-5 w-5" />;
     };
 
+    const totalPages = Math.ceil(totalRows / pageSize);
+
     return (
         <div className="w-full h-full flex flex-col min-h-0 space-y-4">
             {/* 工具栏 */}
@@ -150,7 +170,7 @@ export function FileList({ vault, vaults, onVaultChange, isRecycle = false }: Fi
                         </Select>
                     )}
                     <span className="text-sm text-muted-foreground">
-                        {files.length} {t("file") || "附件"}
+                        {totalRows} {t("file") || "附件"}
                     </span>
                 </div>
 
@@ -302,6 +322,56 @@ export function FileList({ vault, vaults, onVaultChange, isRecycle = false }: Fi
                                 </div>
                             </article>
                         ))}
+                    </div>
+                </div>
+            )}
+
+            {/* 分页控制 */}
+            {files.length > 0 && (
+                <div className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-4 pt-2 shrink-0">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <span>{t("of")} {totalRows} {t("results")}</span>
+                        <Select value={pageSize.toString()} onValueChange={(val) => {
+                            const newSize = parseInt(val);
+                            setPageSize(newSize);
+                            setPage(1);
+                        }}>
+                            <SelectTrigger className="h-8 w-25 rounded-xl">
+                                <SelectValue placeholder={pageSize.toString()} />
+                            </SelectTrigger>
+                            <SelectContent className="rounded-xl">
+                                {[10, 20, 50, 100].map((size) => (
+                                    <SelectItem key={size} value={size.toString()} className="rounded-xl">
+                                        {size} {t("perPage")}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handlePageChange(page - 1)}
+                            disabled={page === 1 || loading}
+                            className="rounded-xl"
+                        >
+                            <ChevronLeft className="h-4 w-4" />
+                            {t("previous")}
+                        </Button>
+                        <span className="text-sm font-medium px-2">
+                            {page} / {totalPages}
+                        </span>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handlePageChange(page + 1)}
+                            disabled={page === totalPages || loading}
+                            className="rounded-xl"
+                        >
+                            {t("next")}
+                            <ChevronRight className="h-4 w-4" />
+                        </Button>
                     </div>
                 </div>
             )}

@@ -29,6 +29,18 @@ export function FileManager({
     const [vaults, setVaults] = useState<VaultType[]>([]);
     const vaultsLoaded = useRef(false);
 
+    // Lifted state for pagination
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(() => {
+        const saved = localStorage.getItem("filePageSize");
+        return saved ? parseInt(saved, 10) : 10;
+    });
+    const [searchKeyword, setSearchKeyword] = useState("");
+
+    useEffect(() => {
+        localStorage.setItem("filePageSize", pageSize.toString());
+    }, [pageSize]);
+
     const { handleVaultList } = useVaultHandle();
 
     useEffect(() => {
@@ -37,6 +49,11 @@ export function FileManager({
             vaultsLoaded.current = true;
         });
     }, [handleVaultList]);
+
+    // Reset page when vault changes
+    useEffect(() => {
+        setPage(1);
+    }, [vault]);
 
     // 检查是否有仓库（只在加载完成后显示空状态）
     if (vaultsLoaded.current && vaults.length === 0) {
@@ -69,6 +86,12 @@ export function FileManager({
             vaults={vaults}
             onVaultChange={onVaultChange}
             isRecycle={isRecycle}
+            page={page}
+            setPage={setPage}
+            pageSize={pageSize}
+            setPageSize={setPageSize}
+            searchKeyword={searchKeyword}
+            setSearchKeyword={setSearchKeyword}
         />
     );
 }

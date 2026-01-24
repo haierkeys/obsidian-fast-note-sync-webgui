@@ -24,6 +24,8 @@ export function useFileHandle() {
     /**
      * 获取附件列表
      * @param vault 仓库名称
+     * @param page 页码
+     * @param pageSize 每页条数
      * @param isRecycle 是否为回收站
      * @param keyword 搜索关键词
      * @param sortBy 排序字段: mtime(默认), ctime, path
@@ -32,6 +34,8 @@ export function useFileHandle() {
      */
     const handleFileList = useCallback(async (
         vault: string,
+        page: number,
+        pageSize: number,
         isRecycle: boolean = false,
         keyword: string = "",
         sortBy: string = "mtime",
@@ -40,7 +44,9 @@ export function useFileHandle() {
     ) => {
         try {
             const apiUrl = env.API_URL.endsWith("/") ? env.API_URL.slice(0, -1) : env.API_URL;
-            let url = `${apiUrl}/api/files?vault=${encodeURIComponent(vault)}`;
+            const pageStr = Math.floor(page).toString();
+            const pageSizeStr = Math.floor(pageSize).toString();
+            let url = `${apiUrl}/api/files?vault=${encodeURIComponent(vault)}&page=${pageStr}&pageSize=${pageSizeStr}`;
 
             if (isRecycle) {
                 url += `&isRecycle=1`;
@@ -64,17 +70,11 @@ export function useFileHandle() {
                 throw new Error("Network response was not ok");
             }
 
-            const res: { code: number; message: string; data?: { list: File[] } | File[] } = await response.json();
+            const res: { code: number; message: string; data?: FileListResponse } = await response.json();
 
             if (res.code > 0 && res.code <= 200) {
-                let fileList: File[] = [];
-                if (Array.isArray(res.data)) {
-                    fileList = res.data;
-                } else if (res.data && 'list' in res.data && Array.isArray(res.data.list)) {
-                    fileList = res.data.list;
-                }
-
-                callback({ list: fileList });
+                const data = res.data || { list: [], pager: { page: 1, pageSize: pageSize, totalRows: 0, totalPages: 0 } };
+                callback(data);
             } else {
                 toast.error(res.message);
             }
