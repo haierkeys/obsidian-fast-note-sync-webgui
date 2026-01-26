@@ -270,6 +270,7 @@ export function VaultList({ onNavigateToNotes, onNavigateToAttachments }: VaultL
   const [newVaultName, setNewVaultName] = useState("")
   const [searchKeyword, setSearchKeyword] = useState("")
   const [configModalOpen, setConfigModalOpen] = useState(false)
+  const [configModalIsError, setConfigModalIsError] = useState(false)
   const [configVaultName, setConfigVaultName] = useState("")
   const [isRefreshing, setIsRefreshing] = useState(false)
 
@@ -415,15 +416,16 @@ export function VaultList({ onNavigateToNotes, onNavigateToAttachments }: VaultL
   const handleViewConfig = (vaultName: string, e: React.MouseEvent) => {
     e.stopPropagation()
     setConfigVaultName(vaultName)
+    setConfigModalIsError(false)
     setConfigModalOpen(true)
   }
 
   // 获取配置 JSON
-  const getConfigJson = useCallback((vaultName: string) => {
+  const getConfigJson = useCallback((vaultName?: string) => {
     return JSON.stringify({
       api: env.API_URL,
       apiToken: localStorage.getItem("token") || "",
-      vault: vaultName,
+      ...(vaultName ? { vault: vaultName } : {}),
     }, null, 2)
   }, [])
 
@@ -458,7 +460,10 @@ export function VaultList({ onNavigateToNotes, onNavigateToAttachments }: VaultL
           toast.error(t("error") + err)
         })
     } else {
-      toast.error(t("error") + t("copyConfigError"))
+      // 如果不支持剪贴板，则打开模态窗口手动复制
+      setConfigVaultName(vaultName)
+      setConfigModalIsError(true)
+      setConfigModalOpen(true)
     }
   }
 
@@ -607,7 +612,7 @@ export function VaultList({ onNavigateToNotes, onNavigateToAttachments }: VaultL
         <DialogContent className="w-[calc(100vw-2rem)] max-w-lg mx-auto rounded-lg sm:rounded-xl">
           <DialogHeader>
             <DialogTitle className="text-base sm:text-lg truncate pr-8">
-              {t("vaultConfig") || "仓库配置"} - {configVaultName}
+              {configModalIsError ? t("copyConfigError") : (t("authTokenConfig") || "授权配置")} - {configVaultName}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
@@ -618,10 +623,12 @@ export function VaultList({ onNavigateToNotes, onNavigateToAttachments }: VaultL
               <Button variant="outline" onClick={() => setConfigModalOpen(false)} className="w-full sm:w-auto rounded-xl">
                 {t("close") || "关闭"}
               </Button>
-              <Button onClick={handleCopyConfig} className="w-full sm:w-auto rounded-xl">
-                <Clipboard className="h-4 w-4 mr-2" />
-                {t("copy") || "复制"}
-              </Button>
+              {navigator.clipboard && (
+                <Button onClick={handleCopyConfig} className="w-full sm:w-auto rounded-xl">
+                  <Clipboard className="h-4 w-4 mr-2" />
+                  {t("copy") || "复制"}
+                </Button>
+              )}
             </div>
           </div>
         </DialogContent>
