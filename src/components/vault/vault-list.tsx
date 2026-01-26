@@ -1,5 +1,5 @@
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, TouchSensor, useSensor, useSensors, DragEndEvent } from "@dnd-kit/core";
-import { Pencil, Trash2, Plus, Clipboard, Settings, Database, Clock, RefreshCw, Check, X, Search, GripVertical } from "lucide-react";
+import { Pencil, Trash2, Plus, Clipboard, Database, Clock, RefreshCw, Check, X, Search, GripVertical, ExternalLink } from "lucide-react";
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, rectSortingStrategy } from "@dnd-kit/sortable";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useConfirmDialog } from "@/components/context/confirm-dialog-context";
@@ -31,7 +31,6 @@ interface SortableVaultCardProps {
   cancelEdit: () => void;
   handleDelete: (id: string) => void;
   onViewConfig: (vaultName: string, e: React.MouseEvent) => void;
-  onQuickCopy: (vaultName: string, e: React.MouseEvent) => void;
   onNavigateToNotes?: (vaultName: string) => void;
   onNavigateToAttachments?: (vaultName: string) => void;
   formatBytes: (bytes: string | number | undefined) => string;
@@ -48,7 +47,6 @@ function SortableVaultCard({
   cancelEdit,
   handleDelete,
   onViewConfig,
-  onQuickCopy,
   onNavigateToNotes,
   onNavigateToAttachments,
   formatBytes,
@@ -208,26 +206,17 @@ function SortableVaultCard({
           </>
         ) : (
           <>
-            <Tooltip content={t("viewConfig") || "查看配置"} side="top" delay={200}>
+            <Tooltip content={t("authTokenConfig") || "查看配置"} side="top" delay={200}>
               <Button
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 rounded-xl text-muted-foreground hover:text-purple-600"
                 onClick={(e) => onViewConfig(vault.vault, e)}
               >
-                <Settings className="h-4 w-4" />
-              </Button>
-            </Tooltip>
-            <Tooltip content={t("copyConfig") || "快速复制"} side="top" delay={200}>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 rounded-xl text-muted-foreground hover:text-blue-600"
-                onClick={(e) => onQuickCopy(vault.vault, e)}
-              >
                 <Clipboard className="h-4 w-4" />
               </Button>
             </Tooltip>
+
             <Tooltip content={t("editVault")} side="top" delay={200}>
               <Button
                 variant="ghost"
@@ -429,6 +418,13 @@ export function VaultList({ onNavigateToNotes, onNavigateToAttachments }: VaultL
     }, null, 2)
   }, [])
 
+  const getObsidianUrl = useCallback((vaultName?: string) => {
+    const api = env.API_URL;
+    const apiToken = localStorage.getItem("token") || "";
+    const vault = vaultName || configVaultName;
+    return `obsidian://fast-note-sync/sso?pushApi=${encodeURIComponent(api)}&pushApiToken=${encodeURIComponent(apiToken)}&pushVault=${encodeURIComponent(vault)}`;
+  }, [configVaultName]);
+
   // 复制配置（用于模态窗口）
   const handleCopyConfig = () => {
     const configText = getConfigJson(configVaultName)
@@ -442,30 +438,10 @@ export function VaultList({ onNavigateToNotes, onNavigateToAttachments }: VaultL
           toast.error(t("error") + err)
         })
     } else {
-      toast.error(t("error") + t("copyConfigError"))
+      toast.error(t("copyConfigError"))
     }
   }
 
-  // 快速复制配置
-  const handleQuickCopy = (vaultName: string, e: React.MouseEvent) => {
-    e.stopPropagation()
-    const configText = getConfigJson(vaultName)
-    if (navigator.clipboard) {
-      navigator.clipboard
-        .writeText(configText)
-        .then(() => {
-          toast.success(t("copyConfigSuccess"))
-        })
-        .catch((err) => {
-          toast.error(t("error") + err)
-        })
-    } else {
-      // 如果不支持剪贴板，则打开模态窗口手动复制
-      setConfigVaultName(vaultName)
-      setConfigModalIsError(true)
-      setConfigModalOpen(true)
-    }
-  }
 
   return (
     <div className="w-full space-y-4">
@@ -569,8 +545,22 @@ export function VaultList({ onNavigateToNotes, onNavigateToAttachments }: VaultL
 
       {/* 仓库列表 */}
       {filteredVaults.length === 0 && !isAdding ? (
-        <div className="rounded-xl border border-border bg-card p-12 text-center text-muted-foreground">
-          {searchKeyword ? t("noSearchResults") || "没有找到匹配的仓库" : t("noVaults")}
+        <div className="rounded-xl border border-border bg-card p-12 text-center space-y-4">
+          <p className="text-muted-foreground">
+            {searchKeyword ? t("noSearchResults") || "没有找到匹配的仓库" : t("noVaults")}
+          </p>
+          {!searchKeyword && (
+            <div className="flex justify-center pt-2">
+              <Button
+                variant="outline"
+                className="w-full sm:w-auto rounded-xl bg-sky-700 hover:bg-sky-900 text-white hover:text-white transition-colors border-none shadow-sm"
+                onClick={(e) => handleViewConfig("", e)}
+              >
+                <Clipboard className="h-4 w-4 mr-2" />
+                {t("authTokenConfig") || "授权配置"}
+              </Button>
+            </div>
+          )}
         </div>
       ) : (
         <DndContext
@@ -595,7 +585,6 @@ export function VaultList({ onNavigateToNotes, onNavigateToAttachments }: VaultL
                   cancelEdit={cancelEdit}
                   handleDelete={handleDelete}
                   onViewConfig={handleViewConfig}
-                  onQuickCopy={handleQuickCopy}
                   onNavigateToNotes={onNavigateToNotes}
                   onNavigateToAttachments={onNavigateToAttachments}
                   formatBytes={formatBytes}
@@ -612,7 +601,8 @@ export function VaultList({ onNavigateToNotes, onNavigateToAttachments }: VaultL
         <DialogContent className="w-[calc(100vw-2rem)] max-w-lg mx-auto rounded-lg sm:rounded-xl">
           <DialogHeader>
             <DialogTitle className="text-base sm:text-lg truncate pr-8">
-              {configModalIsError ? t("copyConfigError") : (t("authTokenConfig") || "授权配置")} - {configVaultName}
+              {configModalIsError ? t("copyConfigError") : (t("authTokenConfig") || "授权配置")}
+              {configVaultName && ` - ${configVaultName}`}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
@@ -623,12 +613,21 @@ export function VaultList({ onNavigateToNotes, onNavigateToAttachments }: VaultL
               <Button variant="outline" onClick={() => setConfigModalOpen(false)} className="w-full sm:w-auto rounded-xl">
                 {t("close") || "关闭"}
               </Button>
-              {navigator.clipboard && (
-                <Button onClick={handleCopyConfig} className="w-full sm:w-auto rounded-xl">
-                  <Clipboard className="h-4 w-4 mr-2" />
-                  {t("copy") || "复制"}
-                </Button>
-              )}
+              <Button
+                className="w-full sm:w-auto rounded-xl bg-sky-700 hover:bg-sky-900 text-white transition-colors border-none shadow-sm"
+                onClick={() => {
+                  window.location.href = getObsidianUrl();
+                }}
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                {t("oneClickImport")}
+              </Button>
+
+              <Button onClick={handleCopyConfig} className="w-full sm:w-auto rounded-xl">
+                <Clipboard className="h-4 w-4 mr-2" />
+                {t("copy") || "复制"}
+              </Button>
+
             </div>
           </div>
         </DialogContent>

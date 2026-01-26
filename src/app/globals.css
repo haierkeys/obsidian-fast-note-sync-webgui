@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+[data-sonner-toaster] {
+  z-index: 100000 !important;
+}
+
 @custom-variant dark (&:is(.dark *, html.dark *));
 
 /* ========== 默认配色方案 - 绿色系 (green) ========== */
@@ -641,7 +645,6 @@ html.dark[data-color-scheme="teal"],
   /* 确保应用内容在光斑之上 */
   #root {
     position: relative;
-    z-index: 1;
   }
 
   /* Body 背景装饰 - 紫蓝色调光斑 */
@@ -710,6 +713,11 @@ html.dark[data-color-scheme="teal"],
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
     overscroll-behavior: none;
+  }
+
+  button,
+  [role="button"] {
+    cursor: pointer;
   }
 
   button,

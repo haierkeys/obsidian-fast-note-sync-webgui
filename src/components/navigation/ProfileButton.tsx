@@ -1,7 +1,7 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Clipboard, LogOut, ExternalLink } from "lucide-react";
 import { toast } from "@/components/common/Toast";
-import { Clipboard, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { useState, useCallback } from "react";
@@ -40,6 +40,12 @@ export function ProfileButton({ onLogout, className }: ProfileButtonProps) {
       apiToken: localStorage.getItem("token") || "",
     }, null, 2)
   }, [])
+
+  const getObsidianUrl = useCallback(() => {
+    const api = env.API_URL;
+    const apiToken = localStorage.getItem("token") || "";
+    return `obsidian://fast-note-sync/sso?pushApi=${encodeURIComponent(api)}&pushApiToken=${encodeURIComponent(apiToken)}`;
+  }, []);
 
   // 复制配置到剪贴板
   const handleCopyConfig = () => {
@@ -118,19 +124,28 @@ export function ProfileButton({ onLogout, className }: ProfileButtonProps) {
               <Button variant="outline" onClick={() => setConfigModalOpen(false)} className="w-full sm:w-auto rounded-xl">
                 {t("close") || "关闭"}
               </Button>
-              {navigator.clipboard && (
-                <Button
-                  onClick={() => {
-                    navigator.clipboard.writeText(getConfigJson())
-                      .then(() => toast.success(t("copyConfigSuccess")))
-                      .catch(err => toast.error(t("error") + err));
-                  }}
-                  className="w-full sm:w-auto rounded-xl"
-                >
-                  <Clipboard className="h-4 w-4 mr-2" />
-                  {t("copy") || "复制"}
-                </Button>
-              )}
+              <Button
+                className="w-full sm:w-auto rounded-xl bg-sky-700 hover:bg-sky-900 text-white transition-colors border-none shadow-sm"
+                onClick={() => {
+                  window.location.href = getObsidianUrl();
+                }}
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                {t("oneClickImport")}
+              </Button>
+
+              <Button
+                onClick={() => {
+                  navigator.clipboard.writeText(getConfigJson())
+                    .then(() => toast.success(t("copyConfigSuccess")))
+                    .catch(err => toast.error(t("error") + err));
+                }}
+                className="w-full sm:w-auto rounded-xl"
+              >
+                <Clipboard className="h-4 w-4 mr-2" />
+                {t("copy") || "复制"}
+              </Button>
+
             </div>
           </div>
         </DialogContent>
