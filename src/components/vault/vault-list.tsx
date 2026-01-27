@@ -550,14 +550,15 @@ export function VaultList({ onNavigateToNotes, onNavigateToAttachments }: VaultL
             {searchKeyword ? t("noSearchResults") || "没有找到匹配的仓库" : t("noVaults")}
           </p>
           {!searchKeyword && (
-            <div className="flex justify-center pt-2">
+            <div className="flex flex-col items-center gap-4">
+
               <Button
                 variant="outline"
                 className="w-full sm:w-auto rounded-xl bg-sky-700 hover:bg-sky-900 text-white hover:text-white transition-colors border-none shadow-sm"
                 onClick={(e) => handleViewConfig("", e)}
               >
                 <Clipboard className="h-4 w-4 mr-2" />
-                {t("authTokenConfig") || "授权配置"}
+                {t("authTokenConfigTo") || "授权配置"}
               </Button>
             </div>
           )}

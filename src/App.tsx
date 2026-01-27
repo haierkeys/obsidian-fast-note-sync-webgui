@@ -65,11 +65,16 @@ function App() {
           if (!vaultExists) {
             setActiveVault(vaults[0].vault)
           }
+          setVaultsLoaded(true)
+        } else {
+          // 如果没有笔记库，提示用户并返回仓库列表
+          toast.warning(t("pleaseCreateVault"))
+          setModule("vaults")
+          setVaultsLoaded(true)
         }
-        setVaultsLoaded(true)
       })
     }
-  }, [currentModule, isLoggedIn, handleVaultList, activeVault])
+  }, [currentModule, isLoggedIn, handleVaultList, activeVault, t, setModule])
 
   // 动态加载字体和配置
   useEffect(() => {

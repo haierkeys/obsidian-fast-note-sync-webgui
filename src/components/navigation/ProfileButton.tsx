@@ -93,7 +93,7 @@ export function ProfileButton({ onLogout, className }: ProfileButtonProps) {
         {/* 复制配置 */}
         <DropdownMenuItem onClick={handleCopyConfig}>
           <Clipboard className="mr-2 size-4" />
-          {t("copyConfig")}
+          {t("authTokenConfig")}
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
