@@ -192,7 +192,7 @@ export function FileList({ vault, vaults, onVaultChange, isRecycle = false, page
     const totalPages = Math.ceil(totalRows / pageSize);
 
     return (
-        <div className="w-full h-full flex flex-col min-h-0 space-y-4">
+        <div className="w-full flex flex-col space-y-4">
             {/* 工具栏 */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-1">
                 {/* 左侧：仓库选择 */}
@@ -324,7 +324,7 @@ export function FileList({ vault, vaults, onVaultChange, isRecycle = false, page
                     {t("noFiles") || "暂无附件"}
                 </div>
             ) : (
-                <div className="flex-1 min-h-0 overflow-y-auto -mx-2 px-2">
+                <div className="-mx-2 px-2">
                     <div className="grid grid-cols-1 gap-3 py-1">
                         {files.map((file, index) => (
                             <article

@@ -28,7 +28,7 @@ export function MainContent({ children, className }: MainContentProps) {
   return (
     <main
       className={cn(
-        "flex-1 flex flex-col min-h-0 overflow-y-auto",
+        "flex-1 overflow-y-auto",
         "p-2 sm:p-4 md:p-6",
         // 设置页面不需要额外底部留白，其他页面在移动端需要为底部导航留空间
         isMobile && !isSettingsPage && "pb-18",
@@ -36,12 +36,12 @@ export function MainContent({ children, className }: MainContentProps) {
       )}
     >
       {isSettingsPage ? (
-        <div className="flex-1 min-h-0">
+        <div>
           {children}
         </div>
       ) : (
-        <div className="bg-card rounded-lg sm:rounded-xl shadow-sm p-3 sm:p-6 md:p-5 flex-1 flex flex-col min-h-0 ">
-          <div className="flex-1 flex flex-col min-h-0 px-1">
+        <div className="bg-card rounded-lg sm:rounded-xl shadow-sm p-3 sm:p-6 md:p-5 min-h-full">
+          <div className="px-1">
             {children}
           </div>
         </div>
