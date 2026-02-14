@@ -1,4 +1,4 @@
-import { FileText, Trash2, RefreshCw, Search, X, Calendar, Clock, ArrowUpDown, Paperclip, Image, Music, Video, FileCode, RotateCcw, ChevronLeft, ChevronRight, Folder as FolderIcon } from "lucide-react";
+import { FileText, Trash2, RefreshCw, Search, X, Calendar, Clock, SortDesc, SortAsc, Paperclip, Image, Music, Video, FileCode, RotateCcw, ChevronLeft, ChevronRight, Folder as FolderIcon } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useConfirmDialog } from "@/components/context/confirm-dialog-context";
 import { useFileHandle } from "@/components/api-handle/file-handle";
@@ -364,7 +364,11 @@ export function FileList({ vault, vaults, onVaultChange, isRecycle = false, page
                                 className="px-2.5 h-full text-xs flex items-center transition-colors border-l border-border hover:bg-muted"
                                 onClick={() => setSortOrder(sortOrder === "desc" ? "asc" : "desc")}
                             >
-                                <ArrowUpDown className={`h-3.5 w-3.5 transition-transform ${sortOrder === "asc" ? "rotate-180" : ""}`} />
+                                {sortOrder === "desc" ? (
+                                    <SortDesc className="h-3.5 w-3.5" />
+                                ) : (
+                                    <SortAsc className="h-3.5 w-3.5" />
+                                )}
                             </button>
                         </Tooltip>
                     </div>
@@ -461,7 +465,11 @@ export function FileList({ vault, vaults, onVaultChange, isRecycle = false, page
                                 className="px-2.5 h-full text-xs flex items-center transition-colors border-l border-border hover:bg-muted"
                                 onClick={() => setSortOrder(sortOrder === "desc" ? "asc" : "desc")}
                             >
-                                <ArrowUpDown className={`h-3.5 w-3.5 transition-transform ${sortOrder === "asc" ? "rotate-180" : ""}`} />
+                                {sortOrder === "desc" ? (
+                                    <SortDesc className="h-3.5 w-3.5" />
+                                ) : (
+                                    <SortAsc className="h-3.5 w-3.5" />
+                                )}
                             </button>
                         </Tooltip>
                     </div>

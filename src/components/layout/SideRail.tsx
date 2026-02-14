@@ -27,7 +27,7 @@ interface SideRailProps {
  */
 export function SideRail({ isAdmin, onLogout, className }: SideRailProps) {
   const { t } = useTranslation()
-  const { currentModule, setModule } = useAppStore()
+  const { currentModule, setModule, versionInfo } = useAppStore()
 
   // 导航项配置
   const navItems: Array<{
@@ -81,6 +81,7 @@ export function SideRail({ isAdmin, onLogout, className }: SideRailProps) {
               isActive={currentModule === item.id}
               onClick={() => handleNavClick(item.id)}
               tooltipSide="right"
+              showDot={item.id === 'settings' && !!versionInfo?.versionIsNew}
             />
           )
         })}

@@ -1,5 +1,6 @@
 import { addCacheBuster } from "@/lib/utils/cache-buster";
 import { getBrowserLang } from "@/lib/i18n/utils";
+import { useAppStore } from "@/stores/app-store";
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
 import env from "@/env.ts";
@@ -9,11 +10,15 @@ export interface VersionInfo {
     buildTime: string;
     gitTag: string;
     version: string;
+    versionIsNew?: boolean;
+    versionNewLink?: string;
+    versionNewName?: string;
 }
 
 export function useVersion() {
     const { t } = useTranslation()
-    const [versionInfo, setVersionInfo] = useState<VersionInfo | null>(null);
+    const { setVersionInfo } = useAppStore()
+    const [versionInfo, setVersionInfoLocal] = useState<VersionInfo | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -37,6 +42,7 @@ export function useVersion() {
 
                 const res = await response.json();
                 if (res.code < 100 && res.code > 0 && res.data) {
+                    setVersionInfoLocal(res.data);
                     setVersionInfo(res.data);
                 } else {
                     setError(res.message || t('getVersionError'));
@@ -50,7 +56,7 @@ export function useVersion() {
         };
 
         fetchVersion();
-    }, []);
+    }, [setVersionInfo, t]);
 
     return {
         versionInfo,

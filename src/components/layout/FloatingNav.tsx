@@ -22,7 +22,7 @@ interface FloatingNavProps {
  */
 export function FloatingNav({ isAdmin, className }: FloatingNavProps) {
   const { t } = useTranslation()
-  const { currentModule, setModule } = useAppStore()
+  const { currentModule, setModule, versionInfo } = useAppStore()
 
   const navItems: Array<{
     id: ModuleId
@@ -80,6 +80,7 @@ export function FloatingNav({ isAdmin, className }: FloatingNavProps) {
             isActive={currentModule === item.id}
             onClick={() => setModule(item.id)}
             tooltipSide="right"
+            showDot={item.id === 'settings' && !!versionInfo?.versionIsNew}
           />
         ))}
 

@@ -21,6 +21,8 @@ interface NavItemProps {
   tooltipSide?: "right" | "top"
   /** tooltip 延迟显示时间（毫秒） */
   tooltipDelay?: number
+  /** 是否显示提醒红点 */
+  showDot?: boolean
 }
 
 /**
@@ -40,6 +42,7 @@ export function NavItem({
   isPlanned = false,
   tooltipSide = "right",
   tooltipDelay = 500,
+  showDot = false,
 }: NavItemProps) {
   const [showTooltip, setShowTooltip] = useState(false)
   const timerRef = useRef<number | null>(null)
@@ -134,6 +137,9 @@ export function NavItem({
         <Icon className="size-5" strokeWidth={2} />
         {isPlanned && (
           <span className="absolute -top-1 -right-1 size-2 bg-ring rounded-full" />
+        )}
+        {showDot && (
+          <span className="absolute top-1 right-1 size-2 bg-red-500 rounded-full border border-background" />
         )}
       </motion.button>
 

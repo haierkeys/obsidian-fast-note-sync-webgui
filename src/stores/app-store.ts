@@ -1,3 +1,4 @@
+import type { VersionInfo } from '@/components/api-handle/use-version';
 import { persist } from 'zustand/middleware';
 import { create } from 'zustand';
 
@@ -26,10 +27,14 @@ interface AppState {
   userMenuOpen: boolean;
   /** 回收站显示的类型：笔记或附件 */
   trashType: 'notes' | 'files';
+  /** 版本信息 */
+  versionInfo: VersionInfo | null;
 
   // Actions
   /** 设置当前模块 */
   setModule: (module: ModuleId, trashType?: 'notes' | 'files') => void;
+  /** 设置版本信息 */
+  setVersionInfo: (info: VersionInfo) => void;
   /** 切换 Zen 模式 */
   toggleZenMode: () => void;
   /** 设置 Zen 模式 */
@@ -48,6 +53,7 @@ const defaultState = {
   zenMode: false,
   userMenuOpen: false,
   trashType: 'notes' as 'notes' | 'files',
+  versionInfo: null,
 };
 
 /**
@@ -75,6 +81,8 @@ export const useAppStore = create<AppState>()(
 
       setUserMenuOpen: (open) => set({ userMenuOpen: open }),
 
+      setVersionInfo: (info) => set({ versionInfo: info }),
+
       resetState: () => {
         // 重置内存状态
         set(defaultState);
@@ -84,7 +92,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'app-storage',
-      // 持久化 currentModule 和 trashType
+      // 持久化 currentModule 和 trashType (versionInfo 不持久化)
       partialize: (state) => ({
         currentModule: state.currentModule,
         trashType: state.trashType

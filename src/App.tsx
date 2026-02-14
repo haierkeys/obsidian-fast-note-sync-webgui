@@ -80,7 +80,8 @@ function App() {
         }
       })
     }
-  }, [currentModule, isLoggedIn, handleVaultList, activeVault, t, setModule])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentModule, isLoggedIn, handleVaultList, t, setModule])
 
   // 动态加载字体和配置
   useEffect(() => {

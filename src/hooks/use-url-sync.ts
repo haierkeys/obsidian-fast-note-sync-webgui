@@ -18,6 +18,17 @@ export function useUrlSync(
     const isUpdatingFromUrl = useRef(false);
 
     // 1. 监听 URL 变化并更新状态 (PopState & Initial Load)
+    const activeVaultRef = useRef(activeVault);
+    const currentModuleRef = useRef(currentModule);
+
+    useEffect(() => {
+        activeVaultRef.current = activeVault;
+    }, [activeVault]);
+
+    useEffect(() => {
+        currentModuleRef.current = currentModule;
+    }, [currentModule]);
+
     useEffect(() => {
         const handleUrlChange = () => {
             isUpdatingFromUrl.current = true;
@@ -27,7 +38,7 @@ export function useUrlSync(
             const type = params.get('type') as 'notes' | 'files' | null;
 
             // 如果有 vault 参数，设置 activeVault
-            if (vault && vault !== activeVault) {
+            if (vault && vault !== activeVaultRef.current) {
                 setActiveVault(vault);
             }
 
@@ -42,10 +53,12 @@ export function useUrlSync(
             else if (params.has('git')) module = 'git';
 
             // 更新 module
-            if (module === 'trash' && type) {
-                setModule(module, type);
-            } else {
-                setModule(module);
+            if (currentModuleRef.current !== module || (module === 'trash' && type)) {
+                if (module === 'trash' && type) {
+                    setModule(module, type);
+                } else {
+                    setModule(module);
+                }
             }
 
             // Reset ref after state updates
@@ -61,7 +74,7 @@ export function useUrlSync(
         return () => {
             window.removeEventListener('popstate', handleUrlChange);
         };
-    }, [setModule, setActiveVault, activeVault]);
+    }, [setModule, setActiveVault]);
 
     // 2. 监听状态变化并更新 URL
     useEffect(() => {
