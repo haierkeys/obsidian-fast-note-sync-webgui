@@ -1,9 +1,10 @@
-import { useTranslation } from "react-i18next"
-import { Database, FileText, Trash2, Settings, RefreshCw, GitBranch } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { useAppStore, type ModuleId } from "@/stores/app-store"
-import { NavItem } from "@/components/navigation/NavItem"
-import { ProfileButton } from "@/components/navigation/ProfileButton"
+import { Database, FileText, Trash2, Settings, RefreshCw, GitBranch } from "lucide-react";
+import { ProfileButton } from "@/components/navigation/ProfileButton";
+import { useAppStore, type ModuleId } from "@/stores/app-store";
+import { NavItem } from "@/components/navigation/NavItem";
+import { useTranslation } from "react-i18next";
+import { cn } from "@/lib/utils";
+
 
 interface SideRailProps {
   /** 是否为管理员 */
@@ -16,7 +17,7 @@ interface SideRailProps {
 
 /**
  * SideRail - 桌面端侧边导航栏
- * 
+ *
  * 极简设计的垂直导航条：
  * - 宽度 w-16 (64px)
  * - 顶部 Logo
@@ -36,11 +37,11 @@ export function SideRail({ isAdmin, onLogout, className }: SideRailProps) {
     adminOnly?: boolean
     isPlanned?: boolean
   }> = [
-    { id: "vaults", icon: Database, labelKey: "menuVaults" },
-    { id: "notes", icon: FileText, labelKey: "menuNotes" },
-    { id: "trash", icon: Trash2, labelKey: "menuTrash" },
-    { id: "settings", icon: Settings, labelKey: "menuSettings", adminOnly: true },
-  ]
+      { id: "vaults", icon: Database, labelKey: "menuVaults" },
+      { id: "notes", icon: FileText, labelKey: "menuNotes" },
+      { id: "trash", icon: Trash2, labelKey: "menuTrash" },
+      { id: "settings", icon: Settings, labelKey: "menuSettings", adminOnly: true },
+    ]
 
   // 计划中的功能
   const plannedItems = [
@@ -94,8 +95,7 @@ export function SideRail({ isAdmin, onLogout, className }: SideRailProps) {
             icon={item.icon}
             label={t(item.labelKey)}
             isActive={false}
-            onClick={() => {}}
-            isPlanned={true}
+            onClick={() => { }}
             tooltipSide="right"
           />
         ))}

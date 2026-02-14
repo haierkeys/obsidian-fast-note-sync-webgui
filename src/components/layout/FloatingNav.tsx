@@ -93,7 +93,6 @@ export function FloatingNav({ isAdmin, className }: FloatingNavProps) {
             label={t(item.labelKey)}
             isActive={currentModule === item.id}
             onClick={() => setModule(item.id)}
-            isPlanned={true}
             tooltipSide="right"
           />
         ))}

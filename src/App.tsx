@@ -8,6 +8,7 @@ import { ComingSoon } from "@/components/common/ComingSoon";
 import { VaultList } from "@/components/vault/vault-list";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { AuthForm } from "@/components/user/auth-form";
+import { useUrlSync } from "@/hooks/use-url-sync";
 import { toast } from "@/components/common/Toast";
 import { useAppStore } from "@/stores/app-store";
 import { useTranslation } from "react-i18next";
@@ -37,9 +38,14 @@ function App() {
 
   // 本地状态
   const [activeVault, setActiveVault] = useState<string | null>(null)
+
+  // URL 同步 Hooks
+  useUrlSync(activeVault, setActiveVault)
+
   const [vaultsLoaded, setVaultsLoaded] = useState(false)
   const [registerIsEnable, setRegisterIsEnable] = useState(true)
   const [adminUid, setAdminUid] = useState<number | null>(null)
+  const [configLoaded, setConfigLoaded] = useState(false)
 
   // 计算当前用户是否为管理员
   const currentUid = localStorage.getItem("uid") ? parseInt(localStorage.getItem("uid")!) : null
@@ -160,9 +166,9 @@ function App() {
             }
           }
         }
-      } catch (error) {
+      } finally {
         if (isMounted) {
-          console.error(t("getWebGuiConfigError"), error)
+          setConfigLoaded(true)
         }
       }
     }
@@ -274,6 +280,14 @@ function App() {
         )
 
       case "settings":
+        // 等待配置加载完成
+        if (!configLoaded) {
+          return (
+            <div className="flex items-center justify-center h-64">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          )
+        }
         // 非管理员访问设置页面时显示提示并跳转
         if (!isAdmin) {
           toast.warning(t("onlyAdminAccess"))
