@@ -1,15 +1,15 @@
-import { Info, GitBranch, Tag, Bell, Type, UserPlus, HardDrive, Trash2, Clock, Shield, Sun, User, Lock, Loader2, Palette, RefreshCw, ExternalLink, CheckCircle, AlertCircle } from "lucide-react";
+import { Info, GitBranch, Tag, Bell, Type, UserPlus, HardDrive, Trash2, Clock, Shield, Sun, Lock, Loader2, Palette, RefreshCw, ExternalLink, CheckCircle, AlertCircle } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useSettingsStore, ToastPosition, COLOR_SCHEMES } from "@/lib/stores/settings-store";
 import { useUpdateCheck } from "@/components/api-handle/use-update-check";
 import { useVersion } from "@/components/api-handle/use-version";
-import { Eye, EyeOff, Save, Settings } from "lucide-react";
 import { addCacheBuster } from "@/lib/utils/cache-buster";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/components/common/Toast";
 import { getBrowserLang } from "@/lib/i18n/utils";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
+import { Save, Settings } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
@@ -45,14 +45,7 @@ export function SystemSettings({ onBack }: { onBack?: () => void }) {
     const { versionInfo, isLoading: versionLoading } = useVersion()
     const { checkUpdate, isChecking, updateResult } = useUpdateCheck()
 
-    // 账户设置状态
-    const [oldPassword, setOldPassword] = useState("")
-    const [newPassword, setNewPassword] = useState("")
-    const [confirmPassword, setConfirmPassword] = useState("")
-    const [savingPassword, setSavingPassword] = useState(false)
-    const [showOldPassword, setShowOldPassword] = useState(false)
-    const [showNewPassword, setShowNewPassword] = useState(false)
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
 
     const handleCheckUpdate = async () => {
         if (versionInfo?.version) {
@@ -148,41 +141,7 @@ export function SystemSettings({ onBack }: { onBack?: () => void }) {
         fetchConfig()
     }, [token, t, onBack])
 
-    const handleChangePassword = async () => {
-        if (!oldPassword || !newPassword || !confirmPassword) {
-            toast.error(t("fillAllFields"))
-            return
-        }
-        if (newPassword !== confirmPassword) {
-            toast.error(t("passwordMismatch"))
-            return
-        }
-        setSavingPassword(true)
-        try {
-            const formData = new FormData()
-            formData.append("oldPassword", oldPassword)
-            formData.append("password", newPassword)
-            formData.append("confirmPassword", confirmPassword)
-            const response = await fetch(addCacheBuster(env.API_URL + "/api/user/change_password"), {
-                method: "POST",
-                headers: { "Authorization": `Bearer ${token}` },
-                body: formData,
-            })
-            const res = await response.json()
-            if (res.status === true || res.code === 0) {
-                toast.success(t("passwordChangedSuccess"))
-                setOldPassword("")
-                setNewPassword("")
-                setConfirmPassword("")
-            } else {
-                toast.error(res.details || res.message || t("passwordChangeFailed"))
-            }
-        } catch {
-            toast.error(t("passwordChangeFailed"))
-        } finally {
-            setSavingPassword(false)
-        }
-    }
+
 
     if (loading) return <div className="p-8 text-center">{t("loading")}</div>
     if (!config) return <div className="p-8 text-center text-destructive">{t("error")}</div>
@@ -283,42 +242,7 @@ export function SystemSettings({ onBack }: { onBack?: () => void }) {
                     </div>
                 </div>
 
-                {/* 账户设置 */}
-                <div className="rounded-xl border border-border bg-card p-6 space-y-5">
-                    <h2 className="text-lg font-bold text-card-foreground flex items-center gap-2">
-                        <User className="h-5 w-5" />
-                        {t("accountSettings")}
-                    </h2>
-                    <div className="space-y-3">
-                        <div className="flex items-center gap-3">
-                            <Lock className="h-5 w-5 text-muted-foreground" />
-                            <span className="text-sm font-medium">{t("changePassword")}</span>
-                        </div>
-                        <div className="space-y-3">
-                            <div className="relative">
-                                <Input type={showOldPassword ? "text" : "password"} value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} placeholder={t("currentPassword")} className="rounded-xl pr-10" />
-                                <button type="button" onClick={() => setShowOldPassword(!showOldPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-                                    {showOldPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                </button>
-                            </div>
-                            <div className="relative">
-                                <Input type={showNewPassword ? "text" : "password"} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder={t("newPassword")} className="rounded-xl pr-10" />
-                                <button type="button" onClick={() => setShowNewPassword(!showNewPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-                                    {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                </button>
-                            </div>
-                            <div className="relative">
-                                <Input type={showConfirmPassword ? "text" : "password"} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder={t("confirmNewPassword")} className="rounded-xl pr-10" />
-                                <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-                                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                </button>
-                            </div>
-                            <Button onClick={handleChangePassword} disabled={savingPassword || !oldPassword || !newPassword || !confirmPassword} className="w-full rounded-xl">
-                                {savingPassword ? t("submitting") : t("changePassword")}
-                            </Button>
-                        </div>
-                    </div>
-                </div>
+
             </div>
 
 

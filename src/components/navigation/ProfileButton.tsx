@@ -1,6 +1,7 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Clipboard, LogOut, ExternalLink } from "lucide-react";
+import { Clipboard, LogOut, ExternalLink, Lock } from "lucide-react";
+import { ChangePassword } from "@/components/user/change-password";
 import { toast } from "@/components/common/Toast";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
@@ -28,6 +29,7 @@ export function ProfileButton({ onLogout, className }: ProfileButtonProps) {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const [configModalOpen, setConfigModalOpen] = useState(false)
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false)
   const [configModalIsError, setConfigModalIsError] = useState(false)
 
   const currentUid = localStorage.getItem("uid")
@@ -96,6 +98,14 @@ export function ProfileButton({ onLogout, className }: ProfileButtonProps) {
           {t("authTokenConfig")}
         </DropdownMenuItem>
 
+        <DropdownMenuItem onClick={() => {
+          setOpen(false);
+          setChangePasswordOpen(true);
+        }}>
+          <Lock className="mr-2 size-4" />
+          {t("changePassword")}
+        </DropdownMenuItem>
+
         <DropdownMenuSeparator />
 
         {/* 登出 */}
@@ -148,6 +158,16 @@ export function ProfileButton({ onLogout, className }: ProfileButtonProps) {
 
             </div>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* 修改密码模态窗口 */}
+      <Dialog open={changePasswordOpen} onOpenChange={setChangePasswordOpen}>
+        <DialogContent className="max-w-md rounded-xl">
+          <DialogHeader>
+            <DialogTitle>{t("changePassword")}</DialogTitle>
+          </DialogHeader>
+          <ChangePassword close={() => setChangePasswordOpen(false)} />
         </DialogContent>
       </Dialog>
     </DropdownMenu>

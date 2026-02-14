@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
 import { ActionGroup } from "./ActionGroup";
+import { Logo } from "./Logo";
 
 
 interface TopBarProps {
@@ -50,11 +51,7 @@ export function TopBar({ onLogout, className }: TopBarProps) {
     >
       {/* Logo + Module Title */}
       <div className="flex items-center gap-3">
-        <img
-          src="/static/images/icon.svg"
-          alt="Logo"
-          className="size-8 shrink-0"
-        />
+        <Logo className="size-8 shrink-0" />
         <AnimatePresence mode="wait">
           <motion.h1
             key={currentModule}
