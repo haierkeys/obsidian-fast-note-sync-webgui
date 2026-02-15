@@ -1,24 +1,30 @@
 import { useVaultHandle } from "@/components/api-handle/vault-handle";
-import { SystemSettings } from "@/components/layout/system-settings";
 import { useUserHandle } from "@/components/api-handle/user-handle";
-import { NoteManager } from "@/components/note/note-manager";
-import { FileManager } from "@/components/file/file-manager";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { useAuth } from "@/components/context/auth-context";
-import { ComingSoon } from "@/components/common/ComingSoon";
-import { VaultList } from "@/components/vault/vault-list";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { AuthForm } from "@/components/user/auth-form";
 import { useUrlSync } from "@/hooks/use-url-sync";
 import { toast } from "@/components/common/Toast";
 import { useAppStore } from "@/stores/app-store";
 import { useTranslation } from "react-i18next";
-import { useState, useEffect } from "react";
 import env from "@/env.ts";
 
 
-/**
- * App - 应用主组件
- */
+// 懒加载核心业务模块
+const NoteManager = lazy(() => import("@/components/note/note-manager").then(m => ({ default: m.NoteManager })));
+const FileManager = lazy(() => import("@/components/file/file-manager").then(m => ({ default: m.FileManager })));
+const SystemSettings = lazy(() => import("@/components/layout/system-settings").then(m => ({ default: m.SystemSettings })));
+const VaultList = lazy(() => import("@/components/vault/vault-list").then(m => ({ default: m.VaultList })));
+const AuthForm = lazy(() => import("@/components/user/auth-form").then(m => ({ default: m.AuthForm })));
+const ComingSoon = lazy(() => import("@/components/common/ComingSoon").then(m => ({ default: m.ComingSoon })));
+
+// 加载占位符
+const PageLoading = () => (
+  <div className="flex items-center justify-center h-64">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+);
+
 function App() {
   const { t } = useTranslation()
   const { isLoggedIn, login, logout } = useAuth()
@@ -169,7 +175,9 @@ function App() {
   if (!isLoggedIn) {
     return (
       <div className="w-full min-h-screen">
-        <AuthForm onSuccess={handleAuthSuccess} registerIsEnable={registerIsEnable} />
+        <Suspense fallback={<PageLoading />}>
+          <AuthForm onSuccess={handleAuthSuccess} registerIsEnable={registerIsEnable} />
+        </Suspense>
       </div>
     )
   }
@@ -293,7 +301,9 @@ function App() {
 
   return (
     <AppLayout isAdmin={isAdmin} onLogout={handleLogout}>
-      {renderModuleContent()}
+      <Suspense fallback={<PageLoading />}>
+        {renderModuleContent()}
+      </Suspense>
     </AppLayout>
   )
 }

@@ -22,14 +22,32 @@ export default defineConfig({
     chunkSizeWarningLimit: 1500, // 降低警告阈值到 1MB
     rollupOptions: {
       output: {
-        // 代码分块策略 - 简化版以避免循环依赖
+        // 深度拆分供应商库
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            // 仅将最大的 Vditor 编辑器库独立拆分
+            // 每一个分类拆分为独立文件，减小单个包体积
             if (id.includes('vditor')) {
-              return 'vendor-editor';
+              return 'vendor-vditor';
             }
-            // 其余第三方库合并为 vendor 块，确保 React 等核心库初始化顺序正确
+            if (id.includes('lucide') || id.includes('react-icons')) {
+              return 'vendor-icons';
+            }
+            if (id.includes('motion') || id.includes('framer-motion')) {
+              return 'vendor-animation';
+            }
+            if (id.includes('codemirror') || id.includes('@uiw/react-codemirror')) {
+              return 'vendor-editor-cm';
+            }
+            if (id.includes('dnd-kit')) {
+              return 'vendor-dnd';
+            }
+            if (id.includes('@radix-ui') || id.includes('@headlessui')) {
+              return 'vendor-ui';
+            }
+            if (id.includes('lottiefiles')) {
+              return 'vendor-lottie';
+            }
+            // 其余通用库依然放在 vendor，确保 React 等核心库顺序
             return 'vendor';
           }
         },
