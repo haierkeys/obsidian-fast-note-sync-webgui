@@ -1,6 +1,6 @@
 import { addCacheBuster } from "@/lib/utils/cache-buster";
 import { useState, useEffect, useCallback } from "react";
-import { getBrowserLang } from "@/lib/i18n/utils";
+import { getBrowserLang } from "@/i18n/utils";
 import env from "@/env.ts";
 
 

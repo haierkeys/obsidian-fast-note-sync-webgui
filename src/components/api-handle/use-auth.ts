@@ -1,6 +1,6 @@
 import type { LoginFormData, RegisterFormData } from "@/lib/validations/user-schema";
 import { addCacheBuster } from "@/lib/utils/cache-buster";
-import { getBrowserLang } from "@/lib/i18n/utils";
+import { getBrowserLang } from "@/i18n/utils";
 import { useState } from "react";
 import env from "@/env.ts";
 

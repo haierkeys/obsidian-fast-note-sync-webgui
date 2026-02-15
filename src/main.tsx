@@ -1,4 +1,4 @@
-import "@/lib/i18n/translations";
+import "@/i18n/translations";
 import "@/app/globals.css";
 
 import { ConfirmDialogProvider } from "@/components/context/confirm-dialog-context";

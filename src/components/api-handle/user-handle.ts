@@ -1,8 +1,8 @@
 import { addCacheBuster } from "@/lib/utils/cache-buster";
 import type { ChangePassword } from "@/lib/types/user";
 import { toast } from "@/components/common/Toast";
-import { getBrowserLang } from "@/lib/i18n/utils";
 import { useTranslation } from "react-i18next";
+import { getBrowserLang } from "@/i18n/utils";
 import { useCallback, useMemo } from "react";
 import env from "@/env.ts";
 

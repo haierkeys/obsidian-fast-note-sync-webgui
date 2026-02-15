@@ -1,7 +1,7 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
-import { changeLang } from "@/lib/i18n/utils";
+import { changeLang } from "@/i18n/utils";
 import { Languages } from "lucide-react";
 
 

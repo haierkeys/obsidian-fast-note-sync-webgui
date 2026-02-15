@@ -1,7 +1,7 @@
 import { addCacheBuster } from "@/lib/utils/cache-buster";
 import { toast } from "@/components/common/Toast";
-import { getBrowserLang } from "@/lib/i18n/utils";
 import { VaultType } from "@/lib/types/vault";
+import { getBrowserLang } from "@/i18n/utils";
 import { useCallback, useMemo } from "react";
 import env from "@/env.ts";
 

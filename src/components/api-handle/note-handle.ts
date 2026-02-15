@@ -1,7 +1,7 @@
 import { Note, NoteDetail, NoteResponse, NoteHistoryDetail, NoteHistoryListResponse, NoteListResponse } from "@/lib/types/note";
 import { addCacheBuster } from "@/lib/utils/cache-buster";
 import { toast } from "@/components/common/Toast";
-import { getBrowserLang } from "@/lib/i18n/utils";
+import { getBrowserLang } from "@/i18n/utils";
 import { useCallback, useMemo } from "react";
 import { Folder } from "@/lib/types/folder";
 import env from "@/env.ts";

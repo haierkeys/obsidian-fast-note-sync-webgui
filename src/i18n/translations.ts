@@ -1,5 +1,5 @@
-import { getBrowserLang } from "@/lib/i18n/utils";
 import { initReactI18next } from "react-i18next";
+import { getBrowserLang } from "@/i18n/utils";
 import i18n from "i18next";
 
 import zhTW from "./locales/zh-TW";

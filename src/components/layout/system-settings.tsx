@@ -6,11 +6,11 @@ import { addCacheBuster } from "@/lib/utils/cache-buster";
 import { formatFileSize } from "@/lib/utils/format";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/components/common/Toast";
-import { getBrowserLang } from "@/lib/i18n/utils";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { getBrowserLang } from "@/i18n/utils";
 import { useState, useEffect } from "react";
 import env from "@/env.ts";
 

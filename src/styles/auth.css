@@ -91,11 +91,12 @@ body:has(.auth-page-container)::after {
 }
 
 .auth-title {
-  font-size: 24px;
-  font-weight: 500;
+  font-size: 32px;
+  font-weight: 600;
   color: var(--default-text-primary);
   margin-bottom: 0.5rem;
   text-align: center;
+  letter-spacing: -0.02em;
 }
 
 .auth-subtitle {
